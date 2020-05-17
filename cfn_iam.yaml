@@ -16,14 +16,7 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - 's3:PutObject'
-              - 's3:GetObject'
-              - 's3:DeleteObject'
-              - 's3:CreateBucket'
-              - 's3:ListAllMyBuckets' 
-              - 's3:GetBucketLocation'
-              - 'rds-db:connect'
-              - 'iam:ChangePassword'
+              - '*'
             Resource: '*'
       Groups:
         - !Ref DeveloperGroup
@@ -145,6 +138,17 @@ Resources:
     Type: AWS::IAM::User
     Properties:
       UserName: naba@poketapp.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
+  
+  User12:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: saiima.ali@mail.utoronto.ca
       LoginProfile:
         Password:
           Ref: UserPassword
