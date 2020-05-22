@@ -156,3 +156,18 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
   
+  User13:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: siddiquiabdullah92@gmail.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
+
+
+
+        
+  
