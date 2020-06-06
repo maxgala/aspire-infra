@@ -38,7 +38,7 @@ Resources:
   User2:
     Type: AWS::IAM::User
     Properties:
-      UserName: xshehryar@gmail.com
+      UserName: mohaimen.khan@mail.utoronto.ca
       LoginProfile:
         Password:
           Ref: UserPassword
