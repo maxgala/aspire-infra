@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template provisions AWS Cognito for MAX Aspire
+
+Resources:
+  AspireUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+        - Name: 'verified_email'
+          Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+          TemporaryPasswordValidityDays: 7
+      Schema:
+        - Mutable: false
+          Name: 'given_name'
+          Required: true
+        - Mutable: false
+          Name: 'family_name'
+          Required: true
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'industry_tags'
+          # Required: false
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'position'
+          # Required: true
+        - AttributeDataType: 'String'
+          DeveloperOnlyAttribute: true
+          Mutable: true
+          Name: 'user_type'
+          # Required: true
+        - Mutable: true
+          Name: 'phone_number'
+          Required: false
+        - Mutable: false
+          Name: 'birthdate'
+          Required: true
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'company'
+          # Required: false
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'education_level'
+          # Required: true
+        - Mutable: true
+          Name: 'address'
+          Required: true
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'resume'
+          # Required: false
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'photo'
+          # Required: false
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'linkedin_link'
+          # Required: false
+        - AttributeDataType: 'Number'
+          DeveloperOnlyAttribute: true
+          Mutable: true
+          Name: 'credits'
+          # Required: true
+        - AttributeDataType: 'String'
+          DeveloperOnlyAttribute: true
+          Mutable: true
+          Name: 'membership_type'
+          # Required: true
+        - Name: 'updated_at'
+      UsernameAttributes:
+        - email
+      UsernameConfiguration: 
+        CaseSensitive: false
+      UserPoolName: 'AspireUserPool'
+
+  AdminUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: AdminGroup
+      UserPoolId: !Ref AspireUserPool
+
+  MentorUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: MentorGroup
+      UserPoolId: !Ref AspireUserPool
+
+  MenteeUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: MenteeGroup
+      UserPoolId: !Ref AspireUserPool
+
+  PaidUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: PaidGroup
+      UserPoolId: !Ref AspireUserPool
+
+  FreeUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: FreeGroup
+      UserPoolId: !Ref AspireUserPool
+
+  AspireUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: AspireUserClient
+      UserPoolId: !Ref AspireUserPool
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_SRP_AUTH
+      RefreshTokenValidity: 30
+      PreventUserExistenceErrors: ENABLED
+      GenerateSecret: true
+
+Outputs:
+  AspireUserPoolId:
+    Description: 'Aspire pool Id'
+    Value: !Ref AspireUserPool
+  AspireUserPoolArn:
+    Description: 'Aspire pool ARN'
+    Value: !GetAtt AspireUserPool.Arn
+  AspireUserPoolClientId:
+    Description: 'Id of user pool client'
+    Value: !Ref AspireUserPoolClient
