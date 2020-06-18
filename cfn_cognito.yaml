@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: This template provisions AWS Cognito for MAX Aspire
 
 Resources:
+# can we restrict verified by a field (user_type: mentor)?
+## pending user group? mentors are restricted until verified
   AspireUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -28,59 +30,48 @@ Resources:
         - Mutable: false
           Name: 'family_name'
           Required: true
-        - AttributeDataType: 'String'
-          Mutable: true
-          Name: 'industry_tags'
-          # Required: false
-        - AttributeDataType: 'String'
-          Mutable: true
-          Name: 'position'
-          # Required: true
-        - AttributeDataType: 'String'
-          DeveloperOnlyAttribute: true
-          Mutable: true
-          Name: 'user_type'
-          # Required: true
         - Mutable: true
           Name: 'phone_number'
-          Required: false
-        - Mutable: false
-          Name: 'birthdate'
-          Required: true
-        - AttributeDataType: 'String'
-          Mutable: true
-          Name: 'company'
-          # Required: false
-        - AttributeDataType: 'String'
-          Mutable: true
-          Name: 'education_level'
-          # Required: true
         - Mutable: true
           Name: 'address'
           Required: true
+        - Mutable: true
+          Name: 'gender'
+        - Mutable: true
+          Name: 'picture'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'age_range'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'industry_tags'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'position'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'company'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'education_level'
         - AttributeDataType: 'String'
           Mutable: true
           Name: 'resume'
-          # Required: false
-        - AttributeDataType: 'String'
-          Mutable: true
-          Name: 'photo'
-          # Required: false
         - AttributeDataType: 'String'
           Mutable: true
           Name: 'linkedin_link'
-          # Required: false
         - AttributeDataType: 'Number'
-          DeveloperOnlyAttribute: true
+          # DeveloperOnlyAttribute: true
           Mutable: true
           Name: 'credits'
-          # Required: true
         - AttributeDataType: 'String'
-          DeveloperOnlyAttribute: true
+          # DeveloperOnlyAttribute: true
+          Mutable: true
+          Name: 'user_type'
+        - AttributeDataType: 'String'
+          # DeveloperOnlyAttribute: true
           Mutable: true
           Name: 'membership_type'
-          # Required: true
-        - Name: 'updated_at'
       UsernameAttributes:
         - email
       UsernameConfiguration: 
