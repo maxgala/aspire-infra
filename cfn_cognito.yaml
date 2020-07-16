@@ -81,31 +81,25 @@ Resources:
   AdminUserGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
-      GroupName: AdminGroup
+      GroupName: ADMIN
       UserPoolId: !Ref AspireUserPool
 
   MentorUserGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
-      GroupName: MentorGroup
+      GroupName: MENTOR
       UserPoolId: !Ref AspireUserPool
 
-  MenteeUserGroup:
+  MenteeFreeUserGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
-      GroupName: MenteeGroup
+      GroupName: FREE
       UserPoolId: !Ref AspireUserPool
 
-  PaidUserGroup:
+  MenteePaidUserGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
-      GroupName: PaidGroup
-      UserPoolId: !Ref AspireUserPool
-
-  FreeUserGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      GroupName: FreeGroup
+      GroupName: PAID
       UserPoolId: !Ref AspireUserPool
 
   AspireUserPoolClient:
@@ -125,11 +119,13 @@ Resources:
 
 Outputs:
   AspireUserPoolId:
-    Description: 'Aspire pool Id'
+    Description: 'Cognito User Pool Id'
     Value: !Ref AspireUserPool
+
   AspireUserPoolArn:
-    Description: 'Aspire pool ARN'
+    Description: 'Cognito User Pool ARN'
     Value: !GetAtt AspireUserPool.Arn
+
   AspireUserPoolClientId:
-    Description: 'Id of user pool client'
+    Description: 'Cognito User Pool Client Id'
     Value: !Ref AspireUserPoolClient
