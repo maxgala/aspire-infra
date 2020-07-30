@@ -34,8 +34,8 @@ aws_client = boto3.client('cognito-idp')
 # AWS Cognito standard attributes. Every user will have them by default (even if not used)
 # docs: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html
 standard_attributes = [
-    'address', 'birthdate', 'email', 'family_name', 'gender', 'given_name', 'locale', 
-    'middle_name', 'name', 'nickname', 'phone_number', 'picture', 'preferred_username', 
+    'address', 'birthdate', 'email', 'family_name', 'gender', 'given_name', 'locale',
+    'middle_name', 'name', 'nickname', 'phone_number', 'picture', 'preferred_username',
     'profile', 'updated_at', 'website', 'zoneinfo'
 ]
 
@@ -46,13 +46,13 @@ def admin_create_user(user: dict, poolId: str):
     print("sign up user: {}".format(user['email']))
     try:
         response = aws_client.admin_create_user(
-            UserPoolId=poolId, 
-            Username=user['email'], 
+            UserPoolId=poolId,
+            Username=user['email'],
             UserAttributes=[
                 {'Name': key, 'Value': val} if key in standard_attributes \
                     else {'Name': 'custom:{}'.format(key), 'Value': val} for key, val in user.items() if val
-            ], 
-            DesiredDeliveryMediums=['EMAIL'], 
+            ],
+            DesiredDeliveryMediums=['EMAIL'],
             MessageAction='SUPPRESS'
         )
         print("response= {}".format(response))
@@ -65,7 +65,7 @@ def admin_get_user(user: dict, poolId: str):
     print("get user: {}".format(user['email']))
     try:
         response = aws_client.admin_get_user(
-            UserPoolId=poolId, 
+            UserPoolId=poolId,
             Username=user['email']
         )
         print("response= {}".format(response))
@@ -78,7 +78,7 @@ def admin_delete_user(user: dict, poolId: str):
     print("delete user: {}".format(user['email']))
     try:
         response = aws_client.admin_delete_user(
-            UserPoolId=poolId, 
+            UserPoolId=poolId,
             Username=user['email']
         )
         print("response= {}".format(response))
@@ -86,7 +86,7 @@ def admin_delete_user(user: dict, poolId: str):
     except:
         traceback.print_exc()
     return None
-    
+
 # --- COGNITO APIs END ---
 
 # --- HELPERS BEGIN---
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     import sys
     import os
     import pandas as pd
-    
+
     def help():
         return '''  Usage: python add_mentors.py <command> {csv_file_relative_path} {number_of_mentors} {AWS_Cognito_UserPoolId} [options]
           Commands can be one of the following:
@@ -134,22 +134,24 @@ if __name__ == "__main__":
     def error_exit():
         print(help())
         exit(1)
-    
+
     command = sys.argv[1] if len(sys.argv) > 1 else error_exit()
     if command == 'help':
         print(help())
         exit(0)
-    
+
     if len(sys.argv) < 5 or len(sys.argv) > 6:
         print(help())
         exit(1)
-    
+
     file_path = sys.argv[2]
     num_mentors = int(sys.argv[3])
     poolId = sys.argv[4]
 
-    col_list = ['email', 'family_name', 'given_name', 'prefix', 'gender', \
-        'age_range', 'industry_tags', 'position', 'company', 'country', 'region']
+    col_list = [
+        'email', 'family_name', 'given_name', 'prefix', 'gender', 'industry',
+        'industry_tags', 'position', 'company', 'country', 'region'
+    ]
     mentors_df = pd.read_csv(os.path.abspath(file_path), header=1, usecols=col_list, nrows=num_mentors, engine='python', keep_default_na=False)
     mentors_list = mentors_df.to_dict('records')
 
@@ -168,5 +170,5 @@ if __name__ == "__main__":
     else:
         print(help())
         exit(1)
-    
+
     exit(0)

@@ -1,9 +1,16 @@
-AWSTemplateFormatVersion: 2010-09-09
-Description: This template provisions AWS Cognito for MAX Aspire
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  aspire-sam
+
+  SAM Template for Cognito and Lambda Triggers
+
+Globals:
+  Function:
+    Runtime: python3.6
+    Timeout: 30
 
 Resources:
-# can we restrict verified by a field (user_type: mentor)?
-## pending user group? mentors are restricted until verified
   AspireUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -72,6 +79,15 @@ Resources:
           # DeveloperOnlyAttribute: true
           Mutable: true
           Name: 'membership_type'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'start_date'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'end_date'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'meetings_frequency'
       UsernameAttributes:
         - email
       UsernameConfiguration: 
@@ -116,6 +132,18 @@ Resources:
       RefreshTokenValidity: 30
       PreventUserExistenceErrors: ENABLED
       GenerateSecret: true
+
+  CognitoPreSignUp:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: PreSignUp
+      Handler: lambda_function.handler
+      Events:
+          CreateDatabaseModelsEvent:
+            Type: Cognito
+            Properties:
+              UserPool: !Ref AspireUserPool
+              Trigger: PreSignUp
 
 Outputs:
   AspireUserPoolId:
