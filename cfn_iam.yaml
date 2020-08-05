@@ -98,7 +98,6 @@
     AutomationGroup:
       Type: AWS::IAM::Group        
 
-
     AutomationUser:
       Type: AWS::IAM::User
       Properties:
@@ -124,7 +123,7 @@
     User2:
       Type: AWS::IAM::User
       Properties:
-        UserName: mohaimen.khan@mail.utoronto.ca
+        UserName: ahmed.r.hamodi@gmail.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -135,7 +134,7 @@
     User3:
       Type: AWS::IAM::User
       Properties:
-        UserName: ahmed.r.hamodi@gmail.com
+        UserName: arsalan.rana@maxgala.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -146,7 +145,7 @@
     User4:
       Type: AWS::IAM::User
       Properties:
-        UserName: arsalan.rana@maxgala.com
+        UserName: tayyaabtanveer@gmail.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -157,7 +156,7 @@
     User5:
       Type: AWS::IAM::User
       Properties:
-        UserName: tayyaabtanveer@gmail.com
+        UserName: malak.ali@maxgala.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -168,7 +167,7 @@
     User6:
       Type: AWS::IAM::User
       Properties:
-        UserName: malak.ali@maxgala.com
+        UserName: shehryarsuleman@gmail.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -179,7 +178,7 @@
     User7:
       Type: AWS::IAM::User
       Properties:
-        UserName: shehryarsuleman@gmail.com
+        UserName: sammer.haq@gmail.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -190,7 +189,7 @@
     User8:
       Type: AWS::IAM::User
       Properties:
-        UserName: hazem61995@gmail.com
+        UserName: aazar.zafar@maxgala.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -201,7 +200,7 @@
     User9:
       Type: AWS::IAM::User
       Properties:
-        UserName: sammer.haq@gmail.com
+        UserName: naba@poketapp.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -212,7 +211,7 @@
     User10:
       Type: AWS::IAM::User
       Properties:
-        UserName: aazar.zafar@maxgala.com
+        UserName: saiima.ali@mail.utoronto.ca
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -223,7 +222,7 @@
     User11:
       Type: AWS::IAM::User
       Properties:
-        UserName: naba@poketapp.com
+        UserName: siddiquiabdullah92@gmail.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -234,7 +233,7 @@
     User12:
       Type: AWS::IAM::User
       Properties:
-        UserName: saiima.ali@mail.utoronto.ca
+        UserName: xshehryar@gmail.com
         LoginProfile:
           Password:
             Ref: UserPassword
@@ -245,7 +244,7 @@
     User13:
       Type: AWS::IAM::User
       Properties:
-        UserName: siddiquiabdullah92@gmail.com
+        UserName: samiyaakhtar7@gmail.com
         LoginProfile:
           Password:
             Ref: UserPassword
