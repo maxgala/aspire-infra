@@ -8,26 +8,33 @@ fields:
     - email
     - family_name
     - given_name
+    - prefix
     - gender
+    - birthdate
+    - industry
     - industry_tags
     - position
     - company
     - country
     - region
+    - user_type
+    - start_date
+    - end_date
+    - meetings_frequency
 
 missing fields:
     - phone_number
-    - birthdate
     - education_level
     - resume
     - picture
-    - linkedin_link
+    - linkedin
     - credits
 '''
 
 import traceback
 import boto3
 import json
+import time
 
 aws_client = boto3.client('cognito-idp')
 
@@ -40,6 +47,19 @@ standard_attributes = [
 ]
 
 # --- COGNITO APIs BEGIN ---
+def admin_add_user_to_group(username: str, group_name: str, poolId: str):
+    print("add user to group: {} {}".format(username, group_name))
+    try:
+        response = aws_client.admin_add_user_to_group(
+            UserPoolId=poolId,
+            Username=username,
+            GroupName=group_name
+        )
+        print("response= {}".format(response))
+        return response
+    except:
+        traceback.print_exc()
+    return None
 
 # docs: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp.html#CognitoIdentityProvider.Client.admin_create_user
 def admin_create_user(user: dict, poolId: str):
@@ -90,11 +110,19 @@ def admin_delete_user(user: dict, poolId: str):
 # --- COGNITO APIs END ---
 
 # --- HELPERS BEGIN---
-def create_one(user: dict, poolId: str):
+def add_user_to_group(username: str, group_name: str, poolId: str):
+    admin_add_user_to_group(username, group_name, poolId)
+
+def create_one(user: dict, user_type: str, poolId: str):
     if not user['email']:
         return
+    elif len(user['email'].split(';')) > 1:
+        user['email'] = user['email'].split(';')[0]
 
     user['address'] = json.dumps({'country': user.pop('country'), 'region': user.pop('region')})
+    user['birthdate'] = '1980-01-01'
+    user['user_type'] = user_type
+    user['meetings_frequency'] = str(user['meetings_frequency'])
     admin_create_user(user, poolId)
 
 def create_all(users: list, poolId: str, delall=False):
@@ -102,14 +130,22 @@ def create_all(users: list, poolId: str, delall=False):
         delete_all(users, poolId)
 
     for user in users:
-        create_one(user, poolId)
+        create_one(user, 'MENTOR', poolId)
+        add_user_to_group(user['email'], 'MENTOR', poolId)
+        time.sleep(2)
 
 def delete_one(user: dict, poolId: str):
+    if not user['email']:
+        return
+    elif len(user['email'].split(';')) > 1:
+        user['email'] = user['email'].split(';')[0]
+
     admin_delete_user(user, poolId)
 
 def delete_all(users: list, poolId: str):
     for user in users:
         delete_one(user, poolId)
+        time.sleep(2)
 
 # --- HELPERS END---
 
@@ -129,6 +165,7 @@ if __name__ == "__main__":
           Notes:
             * supports python 3
             * aws profile with admin permissions
+            * cognito pool deployed with MENTOR group created
             * keep col_list updated
         '''
     def error_exit():
@@ -150,7 +187,7 @@ if __name__ == "__main__":
 
     col_list = [
         'email', 'family_name', 'given_name', 'prefix', 'gender', 'industry',
-        'industry_tags', 'position', 'company', 'country', 'region'
+        'industry_tags', 'position', 'company', 'country', 'region', 'meetings_frequency'
     ]
     mentors_df = pd.read_csv(os.path.abspath(file_path), header=1, usecols=col_list, nrows=num_mentors, engine='python', keep_default_na=False)
     mentors_list = mentors_df.to_dict('records')
