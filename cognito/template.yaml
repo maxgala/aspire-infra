@@ -37,6 +37,7 @@ Resources:
           Required: true
         - Mutable: true
           Name: 'phone_number'
+          Required: true
         - Mutable: true
           Name: 'address'
           Required: true
@@ -44,8 +45,9 @@ Resources:
           Name: 'gender'
         - Mutable: true
           Name: 'picture'
-        - Mutable: true
+        - Mutable: false
           Name: 'birthdate'
+          Required: true
         - AttributeDataType: 'String'
           Mutable: true
           Name: 'prefix'
