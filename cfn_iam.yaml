@@ -34,7 +34,6 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
   User2:
     Type: AWS::IAM::User
     Properties:
@@ -45,7 +44,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User3:
     Type: AWS::IAM::User
     Properties:
@@ -167,6 +166,16 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
+  User14:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: xshehryar@gmail.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
 
 
         
