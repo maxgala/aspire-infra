@@ -1,0 +1,166 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  aspire-sam
+
+  SAM Template for Cognito and Lambda Triggers
+
+Globals:
+  Function:
+    Runtime: python3.6
+    Timeout: 30
+
+Resources:
+  AspireUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: 'verified_email'
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+          TemporaryPasswordValidityDays: 7
+      Schema:
+        - Mutable: false
+          Name: 'given_name'
+          Required: true
+        - Mutable: false
+          Name: 'family_name'
+          Required: true
+        - Mutable: true
+          Name: 'phone_number'
+          Required: true
+        - Mutable: true
+          Name: 'address'
+          Required: true
+        - Mutable: true
+          Name: 'gender'
+        - Mutable: true
+          Name: 'picture'
+        - Mutable: false
+          Name: 'birthdate'
+          Required: true
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'prefix'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'industry'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'industry_tags'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'position'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'company'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'education_level'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'resume'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'linkedin'
+        - AttributeDataType: 'Number'
+          Mutable: true
+          Name: 'credits'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'user_type'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'start_date'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'end_date'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'meetings_frequency'
+      UsernameAttributes:
+        - email
+      UsernameConfiguration: 
+        CaseSensitive: false
+      UserPoolName: 'Aspire-User-Pool'
+
+  AdminUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: ADMIN
+      UserPoolId: !Ref AspireUserPool
+
+  MentorUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: MENTOR
+      UserPoolId: !Ref AspireUserPool
+
+  MenteeFreeUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: FREE
+      UserPoolId: !Ref AspireUserPool
+
+  MenteePaidUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: PAID
+      UserPoolId: !Ref AspireUserPool
+
+  AspireUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: AspireUserClient
+      UserPoolId: !Ref AspireUserPool
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_SRP_AUTH
+      RefreshTokenValidity: 30
+      PreventUserExistenceErrors: ENABLED
+      GenerateSecret: true
+
+  CognitoPreSignUp:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: PreSignUp
+      Handler: lambda_function.handler
+      Policies:
+        - Statement:
+          - Sid: SESSendPolicy
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+              - ses:SendRawEmail
+            Resource: '*'
+      Events:
+          CreateDatabaseModelsEvent:
+            Type: Cognito
+            Properties:
+              UserPool: !Ref AspireUserPool
+              Trigger: PreSignUp
+
+Outputs:
+  AspireUserPoolId:
+    Description: 'Cognito User Pool Id'
+    Value: !Ref AspireUserPool
+
+  AspireUserPoolArn:
+    Description: 'Cognito User Pool ARN'
+    Value: !GetAtt AspireUserPool.Arn
+
+  AspireUserPoolClientId:
+    Description: 'Cognito User Pool Client Id'
+    Value: !Ref AspireUserPoolClient

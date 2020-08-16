@@ -1,182 +1,264 @@
-AWSTemplateFormatVersion: 2010-09-09
-Description: This template provisions IAM groups and users with read-only permission
+  AWSTemplateFormatVersion: 2010-09-09
+  Description: This template provisions IAM groups, an automation user, and users with read-only permission
 
-Parameters:
-  UserPassword:
-    Type: String
-    Default: 'password'
+  Parameters:
+    UserPassword:
+      Type: String
+      Default: 'password'
 
-Resources:
-  DeveloperPolicy:
-    Type: 'AWS::IAM::Policy'
-    Properties:
-      PolicyName: DeveloperPolicy
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
+  Resources:
+    DeveloperPolicy:
+      Type: 'AWS::IAM::Policy'
+      Properties:
+        PolicyName: DeveloperPolicy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - '*'
+              Resource: '*'
+        Groups:
+          - !Ref DeveloperGroup
+          
+    DeveloperGroup:
+      Type: AWS::IAM::Group
+      
+    AutomationPolicy:
+      Type: 'AWS::IAM::Policy'
+      Properties:
+        PolicyName: AutomationPolicy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
           - Effect: Allow
             Action:
-              - '*'
+              - 'rds-db:connect'
+              - 'iam:CreateRole'
+              - 'iam:DetachRolePolicy'
+              - 'iam:AttachRolePolicy'
+              - 'iam:DeleteRole'
+              - 'iam:GetRole'
+              - 'iam:PassRole'
+              - 'iam:PutRolePolicy'
+              - 'lambda:CreateFunction'
+              - 'lambda:DeleteFunction'
+              - 'lambda:GetFunction'
+              - 'lambda:GetFunctionConfiguration'
+              - 'lambda:AddPermission'
+              - 'lambda:RemovePermission'
+              - 'lambda:UpdateFunctionCode'
+              - 'lambda:ListTags'
+              - 'lambda:TagResource'
+              - 'lambda:UntagResource'
+              - 'lambda:UpdateFunctionConfiguration'
+              - 'apigateway:POST'
+              - 'apigateway:PATCH'
+              - 'apigateway:DELETE'
+              - 'apigateway:GET'
+              - 'apigateway:PUT'
             Resource: '*'
-      Groups:
-        - !Ref DeveloperGroup
-        
-  DeveloperGroup:
-    Type: AWS::IAM::Group
+          - Sid: 'ListBuckets'
+            Effect: Allow
+            Action:
+              - 's3:GetBucketLocation'
+              - 's3:ListAllMyBuckets'
+              - 's3:ListBucket'
+            Resource: 'arn:aws:s3:::*'
+          - Sid: 'GetObjectsInsideLambdaFunction'
+            Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:GetObjectAcl'
+            Resource: 
+            - '*'
+          - Sid: 'PackageAndDeploySAMApplication'
+            Effect: Allow
+            Action:
+            - 's3:PutObject'
+            - 'cloudformation:CreateChangeSet'
+            - 'cloudformation:DescribeChangeSet'
+            - 'cloudformation:ExecuteChangeSet'
+            - 'cloudformation:DescribeStacks'
+            - 'cloudformation:DescribeStackEvents'
+            - 'cloudformation:GetTemplateSummary'
+            Resource: 
+            - '*'
+            - 'arn:aws:cloudformation:*'
+          - Sid: 'AllowLambdaFunctionsToQueryAndUpdateCognitoAsAdmin'
+            Effect: Allow
+            Action:
+            - 'cognito-idp:AdminGetUser'
+            - 'cognito-idp:AdminUpdateUserAttributes'
+            Resource:
+            - 'arn:aws:cognito-idp:*'
+        Groups:
+          - !Ref AutomationGroup 
 
-  User1:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: saleh.bakhit@hotmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  User2:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: mohaimen.khan@mail.utoronto.ca
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
+    AutomationGroup:
+      Type: AWS::IAM::Group        
 
-  User3:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: ahmed.r.hamodi@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User4:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: arsalan.rana@maxgala.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User5:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: tayyaabtanveer@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User6:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: malak.ali@maxgala.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User7:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: shehryarsuleman@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User8:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: hazem61995@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User9:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: sammer.haq@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User10:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: aazar.zafar@maxgala.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User11:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: naba@poketapp.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User12:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: saiima.ali@mail.utoronto.ca
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-  
-  User13:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: siddiquiabdullah92@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
+    AutomationUser:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: automation@maxgala.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref AutomationGroup
 
-  User14:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: xshehryar@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
+    User1:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: saleh.bakhit@hotmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User2:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: ahmed.r.hamodi@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User3:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: arsalan.rana@maxgala.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User4:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: tayyaabtanveer@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User5:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: malak.ali@maxgala.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User6:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: shehryarsuleman@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User7:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: sammer.haq@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User8:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: aazar.zafar@maxgala.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User9:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: naba@poketapp.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User10:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: saiima.ali@mail.utoronto.ca
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User11:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: siddiquiabdullah92@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User12:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: xshehryar@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
+    
+    User13:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: samiyaakhtar7@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
 
-
-        
-  
+    User14:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: mohaimen.khan@mail.utoronto.ca
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
