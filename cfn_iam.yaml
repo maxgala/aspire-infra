@@ -262,3 +262,14 @@
           PasswordResetRequired: true
         Groups:
           - !Ref DeveloperGroup
+          
+    User15:
+      Type: AWS::IAM::User
+      Properties:
+        UserName: esnr.rahman@gmail.com
+        LoginProfile:
+          Password:
+            Ref: UserPassword
+          PasswordResetRequired: true
+        Groups:
+          - !Ref DeveloperGroup
