@@ -137,7 +137,7 @@ Resources:
         - ALLOW_USER_SRP_AUTH
       RefreshTokenValidity: 30
       PreventUserExistenceErrors: ENABLED
-      GenerateSecret: true
+      GenerateSecret: false
 
   # TODO: CognitoPostConfAdminPolicy resource should be AspireUserPool.Arn
   CognitoPostConfirmation:

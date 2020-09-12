@@ -88,7 +88,7 @@ Resources:
           Name: 'meetings_frequency'
       UsernameAttributes:
         - email
-      UsernameConfiguration: 
+      UsernameConfiguration:
         CaseSensitive: false
       UserPoolName: !Ref cognitoUserPoolName
 
@@ -129,7 +129,7 @@ Resources:
         - ALLOW_USER_SRP_AUTH
       RefreshTokenValidity: 30
       PreventUserExistenceErrors: ENABLED
-      GenerateSecret: true
+      GenerateSecret: false
 
   AspireS3ReadWritePolicy:
     Type: 'AWS::IAM::Policy'
@@ -142,7 +142,7 @@ Resources:
             Action:
               - 's3:PutObject'
               - 's3:GetObject'
-            Resource: 
+            Resource:
               - 'arn:aws:s3:::maxcompany' #change bucket name
       Roles:
       - !Ref AuthenticatedRole
@@ -150,15 +150,15 @@ Resources:
 
   AuthenticatedRole:
     Type: AWS::IAM::Role
-    Properties: 
+    Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - Effect: "Allow"
-            Principal: 
-              Federated: 
+            Principal:
+              Federated:
                 - 'cognito-identity.amazonaws.com'
-            Action: 
+            Action:
               - 'sts:AssumeRoleWithWebIdentity'
             Condition:
               StringEquals:
@@ -168,15 +168,15 @@ Resources:
 
   UnauthenticatedRole:
     Type: AWS::IAM::Role
-    Properties: 
+    Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - Effect: "Allow"
-            Principal: 
-              Federated: 
+            Principal:
+              Federated:
                 - 'cognito-identity.amazonaws.com'
-            Action: 
+            Action:
               - 'sts:AssumeRoleWithWebIdentity'
             Condition:
               StringEquals:
@@ -186,20 +186,20 @@ Resources:
 
   AspireIdentityPool:
     Type: AWS::Cognito::IdentityPool
-    Properties: 
+    Properties:
       AllowUnauthenticatedIdentities: true
       IdentityPoolName: AspireIdentityPool
-      CognitoIdentityProviders: 
+      CognitoIdentityProviders:
         - ClientId: !Ref AspireUserPoolClient
           ProviderName: !GetAtt AspireUserPool.ProviderName
 
   AspireIdentityPoolRoleAttachment:
     Type: AWS::Cognito::IdentityPoolRoleAttachment
-    Properties: 
+    Properties:
       IdentityPoolId: !Ref AspireIdentityPool
-      Roles: 
-        'unauthenticated': !GetAtt UnauthenticatedRole.Arn 
-        'authenticated': !GetAtt AuthenticatedRole.Arn 
+      Roles:
+        'unauthenticated': !GetAtt UnauthenticatedRole.Arn
+        'authenticated': !GetAtt AuthenticatedRole.Arn
 
 Outputs:
   AspireIdp:
