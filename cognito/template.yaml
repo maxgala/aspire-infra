@@ -3,7 +3,12 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   aspire-sam
 
-  SAM Template for Cognito and Lambda Triggers
+  SAM Template for Cognito
+
+Parameters:
+  cognitoUserPoolName:
+    Type: String
+    Default: 'Aspire-User-Pool'
 
 Globals:
   Function:
@@ -20,6 +25,8 @@ Resources:
             Priority: 1
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
+      AutoVerifiedAttributes:
+        - email
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -89,9 +96,9 @@ Resources:
           Name: 'meetings_frequency'
       UsernameAttributes:
         - email
-      UsernameConfiguration: 
+      UsernameConfiguration:
         CaseSensitive: false
-      UserPoolName: 'Aspire-User-Pool'
+      UserPoolName: !Ref cognitoUserPoolName
 
   AdminUserGroup:
     Type: AWS::Cognito::UserPoolGroup
@@ -132,25 +139,34 @@ Resources:
       PreventUserExistenceErrors: ENABLED
       GenerateSecret: true
 
-  CognitoPreSignUp:
+  # TODO: CognitoPostConfAdminPolicy resource should be AspireUserPool.Arn
+  CognitoPostConfirmation:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: PreSignUp
+      CodeUri: PostConfirmation
       Handler: lambda_function.handler
       Policies:
         - Statement:
-          - Sid: SESSendPolicy
+          - Sid: CognitoPostConfSESSendPolicy
             Effect: Allow
             Action:
               - ses:SendEmail
               - ses:SendRawEmail
             Resource: '*'
+        - Statement:
+          - Sid: CognitoPostConfAdminPolicy
+            Effect: Allow
+            Action:
+              - cognito-idp:AdminDisableUser
+              - cognito-idp:AdminAddUserToGroup
+              - cognito-idp:AdminDeleteUserAttributes
+            Resource: '*'
       Events:
-          CreateDatabaseModelsEvent:
-            Type: Cognito
-            Properties:
-              UserPool: !Ref AspireUserPool
-              Trigger: PreSignUp
+        CognitoPostConfirmationEvent:
+          Type: Cognito
+          Properties:
+            UserPool: !Ref AspireUserPool
+            Trigger: PostConfirmation
 
 Outputs:
   AspireUserPoolId:

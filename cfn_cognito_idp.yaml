@@ -1,15 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'This template provisions Cognito Identity Pool for Inspector'
 
-Resources:            
+Parameters:
+  cognitoUserPoolName:
+    Type: String
+    Default: 'Aspire-User-Pool'
 
+Resources:
+  # deploy aspire user pool using cognito/template.yaml SAM template!
   AspireUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       AccountRecoverySetting:
         RecoveryMechanisms:
-        - Name: 'verified_email'
-          Priority: 1
+          - Name: 'verified_email'
+            Priority: 1
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
       AutoVerifiedAttributes:
@@ -31,6 +36,7 @@ Resources:
           Required: true
         - Mutable: true
           Name: 'phone_number'
+          Required: true
         - Mutable: true
           Name: 'address'
           Required: true
@@ -38,9 +44,15 @@ Resources:
           Name: 'gender'
         - Mutable: true
           Name: 'picture'
+        - Mutable: false
+          Name: 'birthdate'
+          Required: true
         - AttributeDataType: 'String'
           Mutable: true
-          Name: 'age_range'
+          Name: 'prefix'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'industry'
         - AttributeDataType: 'String'
           Mutable: true
           Name: 'industry_tags'
@@ -58,29 +70,56 @@ Resources:
           Name: 'resume'
         - AttributeDataType: 'String'
           Mutable: true
-          Name: 'linkedin_link'
+          Name: 'linkedin'
         - AttributeDataType: 'Number'
-          # DeveloperOnlyAttribute: true
           Mutable: true
           Name: 'credits'
         - AttributeDataType: 'String'
-          # DeveloperOnlyAttribute: true
           Mutable: true
           Name: 'user_type'
         - AttributeDataType: 'String'
-          # DeveloperOnlyAttribute: true
           Mutable: true
-          Name: 'membership_type'
+          Name: 'start_date'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'end_date'
+        - AttributeDataType: 'String'
+          Mutable: true
+          Name: 'meetings_frequency'
       UsernameAttributes:
         - email
       UsernameConfiguration: 
         CaseSensitive: false
-      UserPoolName: 'AspireUserPool'
+      UserPoolName: !Ref cognitoUserPoolName
+
+  AdminUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: ADMIN
+      UserPoolId: !Ref AspireUserPool
+
+  MentorUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: MENTOR
+      UserPoolId: !Ref AspireUserPool
+
+  MenteeFreeUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: FREE
+      UserPoolId: !Ref AspireUserPool
+
+  MenteePaidUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: PAID
+      UserPoolId: !Ref AspireUserPool
 
   AspireUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      ClientName: AspireUserPoolClient
+      ClientName: AspireUserClient
       UserPoolId: !Ref AspireUserPool
       ExplicitAuthFlows:
         - ALLOW_ADMIN_USER_PASSWORD_AUTH
@@ -91,7 +130,7 @@ Resources:
       RefreshTokenValidity: 30
       PreventUserExistenceErrors: ENABLED
       GenerateSecret: true
-      
+
   AspireS3ReadWritePolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -166,5 +205,3 @@ Outputs:
   AspireIdp:
     Description: 'Cognito Identity Pool for Inspector'
     Value: !Ref AspireIdentityPool
-
-
