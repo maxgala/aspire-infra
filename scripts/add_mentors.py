@@ -35,6 +35,7 @@ import traceback
 import boto3
 import json
 import time
+import re
 
 aws_client = boto3.client('cognito-idp')
 
@@ -118,6 +119,15 @@ def create_one(user: dict, user_type: str, poolId: str):
         return
     elif len(user['email'].split(';')) > 1:
         user['email'] = user['email'].split(';')[0]
+    
+    if not user['phone_number']:
+        del user['phone_number']
+    else:
+        if len(user['phone_number'].split(';')) > 1:
+            user['phone_number'] = user['phone_number'].split(';')[0].strip()
+        user['phone_number'] = re.sub(r'[\s-]', '', user['phone_number'].strip())
+        if user['phone_number'][0] != '+':
+            user['phone_number'] = '+1' + user['phone_number']
 
     user['address'] = json.dumps({'country': user.pop('country'), 'region': user.pop('region')})
     user['birthdate'] = '1980-01-01'
@@ -187,7 +197,8 @@ if __name__ == "__main__":
 
     col_list = [
         'email', 'family_name', 'given_name', 'prefix', 'gender', 'industry',
-        'industry_tags', 'position', 'company', 'country', 'region', 'meetings_frequency'
+        'industry_tags', 'position', 'company', 'country', 'region',
+        'meetings_frequency', 'phone_number'
     ]
     mentors_df = pd.read_csv(os.path.abspath(file_path), header=1, usecols=col_list, nrows=num_mentors, engine='python', keep_default_na=False)
     mentors_list = mentors_df.to_dict('records')
