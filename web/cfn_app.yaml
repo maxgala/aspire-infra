@@ -1,0 +1,103 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'This template CloudFront distrubtion and S3 bucket for the portal'
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Default: aspire-app
+    Description: Name of S3 bucket
+  AcmCertificateArn:
+    Type: String
+    Default: arn:aws:acm:us-east-1:143848191537:certificate/15a33154-ade3-4494-b3ab-fa78ba5ea1dd
+    Description: ARN of the certificate to use with the portal
+
+Resources:
+  S3Bucket:
+    DeletionPolicy: 'Delete'
+    Metadata:
+      Comment: 'Bucket to host a static website'
+    Properties:
+      AccessControl: 'Private'
+      BucketName: !Ref S3BucketName
+      WebsiteConfiguration:
+        IndexDocument: index.html
+    Type: 'AWS::S3::Bucket'
+
+  S3BucketPolicy:
+    Metadata:
+      Comment: 'Bucket policy to allow CloudFront to access the bucket'
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: 'Allow'
+            Principal: '*'
+            Resource:
+              - !Sub 'arn:aws:s3:::${S3Bucket}/*'
+    Type: 'AWS::S3::BucketPolicy'
+
+  CfDistribution:
+    Metadata:
+      Comment: 'A simple CloudFront distribution with an S3 origin'
+    Properties:
+      DistributionConfig:
+        Comment: 'A simple distribution with an S3 origin'
+        Aliases:
+          - 'aspire.maxgala.com'
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          SslSupportMethod: sni-only
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - 'HEAD'
+            - 'GET'
+          CachedMethods:
+            - 'HEAD'
+            - 'GET'
+          Compress: false
+          DefaultTTL: 86400
+          ForwardedValues:
+            Cookies:
+              Forward: 'none'
+            Headers:
+              - 'Origin'
+            QueryString: false
+          MaxTTL: 31536000
+          MinTTL: 86400
+          TargetOriginId: !Sub 's3-origin-${S3Bucket}'
+          ViewerProtocolPolicy: 'redirect-to-https'
+        DefaultRootObject: 'index.html'
+        Enabled: true
+        HttpVersion: 'http1.1'
+        IPV6Enabled: false
+        Origins:
+          - DomainName: !GetAtt S3Bucket.DomainName
+            Id: !Sub 's3-origin-${S3Bucket}'
+            OriginPath: ''
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CfOriginAccessIdentity}'
+        PriceClass: 'PriceClass_All'
+    Type: 'AWS::CloudFront::Distribution'
+
+  CfOriginAccessIdentity:
+    Metadata:
+      Comment: 'Access S3 bucket content only through CloudFront'
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'Access S3 bucket content only through CloudFront'
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+  
+  
+Outputs:
+  S3BucketName:
+    Description: 'Bucket name that hosts static web pages'
+    Value: !Ref S3Bucket
+  CfDistributionId:
+    Description: 'Id for cloudfront distribution'
+    Value: !Ref CfDistribution
+  CfDistributionDomainName:
+    Description: 'Domain name for cloudfront distribution'
+    Value: !GetAtt CfDistribution.DomainName
