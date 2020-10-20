@@ -20,10 +20,10 @@ Resources:
             Resource: '*'
       Groups:
         - !Ref DeveloperGroup
-          
+
   DeveloperGroup:
     Type: AWS::IAM::Group
-      
+
   AutomationPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -119,7 +119,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User2:
     Type: AWS::IAM::User
     Properties:
@@ -130,7 +130,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User3:
     Type: AWS::IAM::User
     Properties:
@@ -141,7 +141,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User4:
     Type: AWS::IAM::User
     Properties:
@@ -152,7 +152,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User5:
     Type: AWS::IAM::User
     Properties:
@@ -163,7 +163,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User6:
     Type: AWS::IAM::User
     Properties:
@@ -174,7 +174,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User7:
     Type: AWS::IAM::User
     Properties:
@@ -185,7 +185,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User8:
     Type: AWS::IAM::User
     Properties:
@@ -196,7 +196,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User9:
     Type: AWS::IAM::User
     Properties:
@@ -207,7 +207,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User10:
     Type: AWS::IAM::User
     Properties:
@@ -218,7 +218,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User11:
     Type: AWS::IAM::User
     Properties:
@@ -229,7 +229,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User12:
     Type: AWS::IAM::User
     Properties:
@@ -240,7 +240,7 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-  
+
   User13:
     Type: AWS::IAM::User
     Properties:
@@ -262,11 +262,33 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
-        
-  User15:
+
+  User16:
     Type: AWS::IAM::User
     Properties:
-      UserName: esnr.rahman@gmail.com
+      UserName: hafsabzahid@gmail.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
+
+  User17:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: ahmedjamal0208@gmail.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
+
+  User18:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: riztaha@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword
