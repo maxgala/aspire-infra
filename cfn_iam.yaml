@@ -211,7 +211,7 @@ Resources:
   User10:
     Type: AWS::IAM::User
     Properties:
-      UserName: saiima.ali@mail.utoronto.ca
+      UserName: siddiquiabdullah92@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword
@@ -222,7 +222,7 @@ Resources:
   User11:
     Type: AWS::IAM::User
     Properties:
-      UserName: siddiquiabdullah92@gmail.com
+      UserName: xshehryar@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword
@@ -233,7 +233,7 @@ Resources:
   User12:
     Type: AWS::IAM::User
     Properties:
-      UserName: xshehryar@gmail.com
+      UserName: hafsabzahid@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword
@@ -244,7 +244,7 @@ Resources:
   User13:
     Type: AWS::IAM::User
     Properties:
-      UserName: samiyaakhtar7@gmail.com
+      UserName: ahmedjamal0208@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword
@@ -255,7 +255,18 @@ Resources:
   User14:
     Type: AWS::IAM::User
     Properties:
-      UserName: mohaimen.khan@mail.utoronto.ca
+      UserName: riztaha@gmail.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
+
+  User15:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: kshahidmalik@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword
@@ -266,29 +277,7 @@ Resources:
   User16:
     Type: AWS::IAM::User
     Properties:
-      UserName: hafsabzahid@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
-  User17:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: ahmedjamal0208@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
-  User18:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: riztaha@gmail.com
+      UserName: kashif89@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword
