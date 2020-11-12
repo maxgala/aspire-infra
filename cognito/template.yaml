@@ -85,15 +85,18 @@ Resources:
         - AttributeDataType: 'String'
           Mutable: true
           Name: 'user_type'
-        - AttributeDataType: 'String'
+        - AttributeDataType: 'Number'
           Mutable: true
           Name: 'start_date'
-        - AttributeDataType: 'String'
+        - AttributeDataType: 'Number'
           Mutable: true
           Name: 'end_date'
-        - AttributeDataType: 'String'
+        - AttributeDataType: 'Number'
           Mutable: true
-          Name: 'meetings_frequency'
+          Name: 'declared_chats_frequency'
+        - AttributeDataType: 'Number'
+          Mutable: true
+          Name: 'remaining_chats_frequency'
       UsernameAttributes:
         - email
       UsernameConfiguration:
