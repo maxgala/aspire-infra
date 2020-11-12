@@ -119,7 +119,7 @@ def create_one(user: dict, user_type: str, poolId: str):
         return
     elif len(user['email'].split(';')) > 1:
         user['email'] = user['email'].split(';')[0]
-    
+
     if not user['phone_number']:
         del user['phone_number']
     else:
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     import pandas as pd
 
     def help():
-        return '''  Usage: python add_mentors.py <command> {csv_file_relative_path} {number_of_mentors} {AWS_Cognito_UserPoolId} [options]
+        return '''  Usage: python create_se.py <command> {csv_file_relative_path} {number_of_mentors} {AWS_Cognito_UserPoolId} [options]
           Commands can be one of the following:
             * create_all
             * delete_all
