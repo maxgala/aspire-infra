@@ -48,7 +48,8 @@ from datetime import datetime
 parser = argparse.ArgumentParser(description='add/remove SEs and populate Chat table from CSV')
 parser.add_argument('-file', type=lambda x: is_valid_file(parser, x), required=True, help='Relative Path to CSV file')
 parser.add_argument('-rows', type=int, required=True, help='Number of SEs in CSV file')
-parser.add_argument('-id', type=str, required=True, help='Cognito User Pool Id')
+parser.add_argument('-pool_id', type=str, required=True, help='Cognito User Pool Id')
+parser.add_argument('-id_token', type=str, required=True, help='Cognito Id Token (Admin Required)')
 parser.add_argument('-users_list', type=str, nargs='+', help='only process listed users\' emails')
 
 commands_group = parser.add_mutually_exclusive_group(required=True)
@@ -62,7 +63,6 @@ options_group.add_argument('-u', '--users', action='store_const', dest='type', c
 options_group.add_argument('-c', '--chats', action='store_const', dest='type', const='chats', help='Process Chats Only')
 
 aws_client = boto3.client('cognito-idp')
-id_token = 'eyJraWQiOiJYRGVtUzZpaUcrNjlRQ1ZzMlJIRXorZldRUVIxNHJRQXJPNHVlbEwwVXM0PSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiRUVPdy0xNXdhU2d1NW55bkpwdlNyUSIsInN1YiI6IjYxMzQwMTJiLWNmZjgtNGE5ZS1iOTU4LTg4OTIyODBkZjM5MyIsImNvZ25pdG86Z3JvdXBzIjpbIkFETUlOIl0sImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhZGRyZXNzIjp7ImZvcm1hdHRlZCI6IjEyMyBUZXN0IFJvYWQifSwiYmlydGhkYXRlIjoiMjItMTEtMTk5NSIsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX240N1FUN0NxTyIsImNvZ25pdG86dXNlcm5hbWUiOiI2MTM0MDEyYi1jZmY4LTRhOWUtYjk1OC04ODkyMjgwZGYzOTMiLCJnaXZlbl9uYW1lIjoiU2FsZWgiLCJhdWQiOiI0NmoybmNhM2h2MDdxMG8waWNqdmRuZzlxbiIsImV2ZW50X2lkIjoiZmQ4MGI2OWMtOTYzMy00ZGFiLTk2ZjMtNDQ4NDgxOGIyNjIyIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2MDU5MDU0NDAsImV4cCI6MTYwNTkwOTA0MCwiaWF0IjoxNjA1OTA1NDQwLCJmYW1pbHlfbmFtZSI6IkJha2hpdCIsImVtYWlsIjoic2FsZWguYmFraGl0QGhvdG1haWwuY29tIn0.Z4xQnEw8jAmEI-8-QKCZfJt_Fc1vfHfFQ_bkuh07nipRdBi43sYAj0ai9AKymlKSBzmGGwv1r3LOoyg0fQOYmQ2Gez-7lHTC_C7ciBEqJxyHiyzSKqIA0PQiboZ5GNeTdIEQgC76WcsbdTcq5LEC30ifTmSNOuw-s9qxu7mWlFmSOLfZDFP4-_4576JfLGo67WmTmexK4ymI0-YpratCeDX-fPpr0FZWSVe0IqZRVcpSZupE3WNwhCEEm4s2eWqgLcC2uSYV1pyI1lgpaoxhyOPmG1akr4XKuhmIER-q_b2j25y7EBcCKy_BXyj89-4NBotXn08BtdbfWomlRj1K7g'
 
 users_col_list = [
     'email', 'family_name', 'given_name', 'prefix', 'gender', 'industry',
@@ -204,7 +204,7 @@ def create_user_chats(user_chats: dict, delimiter=';'):
         data=payload,
         headers={
             "Content-Type": "application/json",
-            "Authorization": "Bearer %s" % (id_token)
+            "Authorization": "Bearer %s" % (args.id_token)
         }
     )
     if response.status_code != 201:
@@ -239,7 +239,7 @@ def delete_user_chats(user_chats: dict, poolId: str):
         params={'senior_executive': user_chats['email']},
         headers={
             "Content-Type": "application/json",
-            "Authorization": "Bearer %s" % (id_token)
+            "Authorization": "Bearer %s" % (args.id_token)
         }
     )
     if response.status_code != 200:
@@ -289,9 +289,9 @@ if __name__ == "__main__":
         users_chats_records = users_chats_df.to_dict('records')
 
     if args.create:
-        create_all(users_records, users_chats_records, args.id)
+        create_all(users_records, users_chats_records, args.pool_id)
     elif args.delete:
-        delete_all(users_records, users_chats_records, args.id)
+        delete_all(users_records, users_chats_records, args.pool_id)
     else:
-        delete_all(users_records, users_chats_records, args.id)
-        create_all(users_records, users_chats_records, args.id)
+        delete_all(users_records, users_chats_records, args.pool_id)
+        create_all(users_records, users_chats_records, args.pool_id)
