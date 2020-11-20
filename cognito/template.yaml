@@ -44,7 +44,7 @@ Resources:
           Required: true
         - Mutable: true
           Name: 'phone_number'
-          Required: true
+          Required: false
         - Mutable: true
           Name: 'address'
           Required: true
@@ -79,7 +79,7 @@ Resources:
         - AttributeDataType: 'String'
           Mutable: true
           Name: 'linkedin'
-        - AttributeDataType: 'Number'
+        - AttributeDataType: 'String'
           Mutable: true
           Name: 'credits'
         - AttributeDataType: 'String'
@@ -91,12 +91,12 @@ Resources:
         - AttributeDataType: 'Number'
           Mutable: true
           Name: 'end_date'
-        - AttributeDataType: 'Number'
+        - AttributeDataType: 'String'
           Mutable: true
-          Name: 'declared_chats_frequency'
-        - AttributeDataType: 'Number'
+          Name: 'declared_chats_freq'
+        - AttributeDataType: 'String'
           Mutable: true
-          Name: 'remaining_chats_frequency'
+          Name: 'remaining_chats_freq'
       UsernameAttributes:
         - email
       UsernameConfiguration:

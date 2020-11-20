@@ -127,14 +127,15 @@ def handler(event, context):
     )
     logger.info(response)
 
-    logger.info('deleing custom:user_type attribute')
-    response = cognito_client.admin_delete_user_attributes(
-        UserPoolId=event['userPoolId'],
-        Username=event['userName'],
-        UserAttributeNames=[
-            'custom:user_type'
-        ]
-    )
-    logger.info(response)
+    # user_type is being used
+    # logger.info('deleing custom:user_type attribute')
+    # response = cognito_client.admin_delete_user_attributes(
+    #     UserPoolId=event['userPoolId'],
+    #     Username=event['userName'],
+    #     UserAttributeNames=[
+    #         'custom:user_type'
+    #     ]
+    # )
+    # logger.info(response)
 
     return event
