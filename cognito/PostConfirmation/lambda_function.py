@@ -8,11 +8,11 @@ logger.setLevel(logging.INFO)
 cognito_client = boto3.client('cognito-idp')
 ses_client = boto3.client('ses')
 
-ADMIN_EMAIL = "saiima.ali@mail.utoronto.ca"
-SUPPORT_EMAIL = "saleh.bakhit@hotmail.com"
+ADMIN_EMAIL = "aspire@maxgala.com"
+SUPPORT_EMAIL = "aspire@maxgala.com"
 
 CHARSET = "UTF-8"
-SUBJECT = "MAX Aspire - Thank you for signing up"
+SUBJECT = "Welcome to MAX Aspire!"
 
 def send_email(source_email, to_addresses, subject, body_text, body_html, charset):
     try:
@@ -56,15 +56,15 @@ def handler(event, context):
     elif user_type == 'FREE':
         BODY_TEXT = ("Salaam!\r\n"
                      "\r\n"
+                     "Welcome to MAX Aspire, our community of high achieving individuals aspiring for success. You have taken the first step to grow your career and develop a long lasting network and set of skills."
                      "On behalf of MAX Aspire, we welcome you and thank you for signing up.\r\n"
                      "\r\n"
-                     "You now have access to:\r\n"
-                     "  - Viewing Job postings\r\n"
-                     "  - Posting your Resume in Jobs Bank\r\n"
-                     "  - Using pay-per-use service to connect with Senior Executives\r\n"
+                     "As an Aspiring Professional, here is how you can get started:\r\n"
+                     "  - Book coffee chats with Senior Executives\r\n"
+                     "  - Setup mock interviews with Senior Executives\r\n"
+                     "  - Explore professional job opportunities\r\n"
                      "\r\n"
-                     "Refer a friend to signup for premium or platinum subscription and earn 10 credits! (?)\r\n"
-                     "We are excited, once again, to welcome you. Please don’t hesitate to reach out to {support_email} if you have any questions.\r\n"
+                     "We are excited to continue on this journey with you. Don't hesitate to email us at {support_email} if you have any questions"
                      "\r\n"
                      "Best,\r\n"
                      "MAX Aspire Team"
@@ -72,23 +72,22 @@ def handler(event, context):
         send_email(ADMIN_EMAIL, [user_email], SUBJECT, BODY_TEXT, None, CHARSET)
     elif user_type == 'PAID':
         BODY_TEXT = ("Salaam!\r\n"
-                     "\r\n"
-                     "On behalf of MAX Aspire, we welcome you and thank you for signing up.\r\n"
-                     "\r\n"
-                     "You now have access to:\r\n"
-                     "  - Viewing and applying to Job postings\r\n"
-                     "  - Access to connect with Job poster (?)\r\n"
-                     "  - Posting your Resume in Jobs Bank\r\n"
-                     "  - Posting Jobs\r\n"
-                     "  - Using your credits to connect with Senior Executives\r\n"
-                     "  - Board of Directors roles\r\n"
-                     "\r\n"
-                     "Refer a friend to signup for premium or platinum subscription and earn 10 credits! (?)\r\n"
-                     "We are excited, once again, to welcome you. Please don’t hesitate to reach out to {support_email} if you have any questions.\r\n"
-                     "\r\n"
-                     "Best,\r\n"
-                     "MAX Aspire Team"
-                    )
+                "\r\n"
+                "Welcome to MAX Aspire, our community of high achieving individuals aspiring for success. You have taken the first step to grow your career and develop a long lasting network and set of skills."
+                "On behalf of MAX Aspire, we welcome you and thank you for signing up.\r\n"
+                "\r\n"
+                "As an Aspiring Professional, here is how you can get started:\r\n"
+                "  - Book coffee chats with Senior Executives\r\n"
+                "  - Setup mock interviews with Senior Executives\r\n"
+                "  - Explore professional job opportunities\r\n"
+                "  - Post your resume for recruiters\r\n"
+                "  - Connect with the job poster\r\n"
+                "\r\n"
+                "We are excited to continue on this journey with you. Don't hesitate to email us at {support_email} if you have any questions"
+                "\r\n"
+                "Best,\r\n"
+                "MAX Aspire Team"
+            )
         send_email(ADMIN_EMAIL, [user_email], SUBJECT, BODY_TEXT, None, CHARSET)
     elif user_type == 'MENTOR':
         logger.info('disabling user of type {%s}' % (user_type))
