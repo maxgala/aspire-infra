@@ -17,15 +17,15 @@ fields:
     - company
     - country
     - region
+    - city
     - user_type
     - declared_chats_freq
     - remaining_chats_freq
     - phone_number
-
-missing fields:
-    - city
     - start_date
     - end_date
+
+missing fields:
     - education_level
     - resume
     - picture
@@ -123,6 +123,23 @@ def admin_create_user(user: dict, poolId: str):
             traceback.print_exc()
     return None
 
+def admin_update_user_attributes(user: dict, poolId: str):
+    print("update user attributes: {}".format(user['email']))
+    try:
+        response = aws_client.admin_update_user_attributes(
+            UserPoolId=poolId,
+            Username=user['email'],
+            UserAttributes=[
+                {'Name': key, 'Value': val} if key in standard_attributes \
+                    else {'Name': 'custom:{}'.format(key), 'Value': val} for key, val in user.items() if val
+            ]
+        )
+        # print("response= {}".format(response))
+        return response
+    except:
+        traceback.print_exc()
+    return None
+
 # docs: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp.html#CognitoIdentityProvider.Client.admin_get_user
 def admin_get_user(user: dict, poolId: str):
     print("get user: {}".format(user['email']))
@@ -166,7 +183,20 @@ def create_user(user: dict, user_type: str, poolId: str):
         if user['phone_number'][0] != '+':
             user['phone_number'] = '+1' + user['phone_number']
 
-    user['address'] = json.dumps({'country': user.pop('country'), 'region': user.pop('region')})
+    start_date = user.get('start_date') or "01/01/2021"
+    end_date = user.get('end_date') or "31/12/2021"
+    user['start_date'] = str(int(datetime.strptime(start_date, "%d/%m/%Y").timestamp()))
+    user['end_date'] = str(int(datetime.strptime(end_date, "%d/%m/%Y").timestamp()))
+
+    address = {}
+    if user.get('country'):
+        address['country'] = user.pop('country')
+    if user.get('region'):
+        address['region'] = user.pop('region')
+    if user.get('city'):
+        address['city'] = user.pop('city')
+    user['address'] = json.dumps(address)
+
     user['birthdate'] = '1970-01-01'
     user['user_type'] = user_type
     user['declared_chats_freq'] = '0'
