@@ -47,7 +47,7 @@ from datetime import datetime
 # TODO: create tool that will take a format of a command line input (below) and create the arg parsers for it
 parser = argparse.ArgumentParser(description='add/remove SEs and populate Chat table from CSV')
 parser.add_argument('-file', type=lambda x: is_valid_file(parser, x), required=True, help='Relative Path to CSV file')
-parser.add_argument('-images_folder', type=str, required=True, help='Relative Path to images folder.)
+parser.add_argument('-images_folder', type=str, required=True, help='Relative Path to images folder.')
 parser.add_argument('-rows', type=int, required=True, help='Number of SEs in CSV file')
 parser.add_argument('-pool_id', type=str, required=True, help='Cognito User Pool Id')
 parser.add_argument('-id_token', type=str, required=False, help='Cognito Id Token (Admin Required)')
@@ -306,6 +306,8 @@ def upload_images(users:list, folder: str, poolId:str):
             prefix = u["prefix"].strip() + " "
         else:
             prefix = ""
+        if len(u['email'].split(';')) > 1:
+            u['email'] = u['email'].split(';')[0]
         name = u["family_name"] + '_' + prefix + u["given_name"]
         print("adding image of " + name)
         image_arg = 'image/' #need to pass in as content type so that image renders on browser rather than downloading
