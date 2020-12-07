@@ -36,10 +36,10 @@ Resources:
           RequireUppercase: true
           TemporaryPasswordValidityDays: 7
       Schema:
-        - Mutable: false
+        - Mutable: true
           Name: 'given_name'
           Required: true
-        - Mutable: false
+        - Mutable: true
           Name: 'family_name'
           Required: true
         - Mutable: true
@@ -50,9 +50,11 @@ Resources:
           Required: true
         - Mutable: true
           Name: 'gender'
+          Required: true
         - Mutable: true
           Name: 'picture'
-        - Mutable: false
+          Required: false
+        - Mutable: true
           Name: 'birthdate'
           Required: true
         - AttributeDataType: 'String'
@@ -103,45 +105,6 @@ Resources:
         CaseSensitive: false
       UserPoolName: !Ref cognitoUserPoolName
 
-  AdminUserGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      GroupName: ADMIN
-      UserPoolId: !Ref AspireUserPool
-
-  MentorUserGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      GroupName: MENTOR
-      UserPoolId: !Ref AspireUserPool
-
-  MenteeFreeUserGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      GroupName: FREE
-      UserPoolId: !Ref AspireUserPool
-
-  MenteePaidUserGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      GroupName: PAID
-      UserPoolId: !Ref AspireUserPool
-
-  AspireUserPoolClient:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      ClientName: AspireUserClient
-      UserPoolId: !Ref AspireUserPool
-      ExplicitAuthFlows:
-        - ALLOW_ADMIN_USER_PASSWORD_AUTH
-        - ALLOW_USER_PASSWORD_AUTH
-        - ALLOW_REFRESH_TOKEN_AUTH
-        - ALLOW_CUSTOM_AUTH
-        - ALLOW_USER_SRP_AUTH
-      RefreshTokenValidity: 30
-      PreventUserExistenceErrors: ENABLED
-      GenerateSecret: false
-
   # TODO: CognitoPostConfAdminPolicy resource should be AspireUserPool.Arn
   CognitoPostConfirmation:
     Type: AWS::Serverless::Function
@@ -161,8 +124,6 @@ Resources:
             Effect: Allow
             Action:
               - cognito-idp:AdminDisableUser
-              - cognito-idp:AdminAddUserToGroup
-              - cognito-idp:AdminDeleteUserAttributes
             Resource: '*'
       Events:
         CognitoPostConfirmationEvent:
@@ -179,7 +140,3 @@ Outputs:
   AspireUserPoolArn:
     Description: 'Cognito User Pool ARN'
     Value: !GetAtt AspireUserPool.Arn
-
-  AspireUserPoolClientId:
-    Description: 'Cognito User Pool Client Id'
-    Value: !Ref AspireUserPoolClient

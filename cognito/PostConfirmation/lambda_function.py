@@ -116,25 +116,5 @@ def handler(event, context):
             Username=event['userName']
         )
         logger.info(response)
-        return event
-
-    logger.info('adding user to group')
-    response = cognito_client.admin_add_user_to_group(
-        UserPoolId=event['userPoolId'],
-        Username=event['userName'],
-        GroupName=user_type
-    )
-    logger.info(response)
-
-    # user_type is being used
-    # logger.info('deleing custom:user_type attribute')
-    # response = cognito_client.admin_delete_user_attributes(
-    #     UserPoolId=event['userPoolId'],
-    #     Username=event['userName'],
-    #     UserAttributeNames=[
-    #         'custom:user_type'
-    #     ]
-    # )
-    # logger.info(response)
 
     return event
