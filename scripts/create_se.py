@@ -70,7 +70,7 @@ s3 = boto3.resource('s3')
 users_col_list = [
     'email', 'family_name', 'given_name', 'prefix', 'gender', 'industry',
     'industry_tags', 'position', 'company', 'country', 'region',
-    'declared_chats_freq', 'phone_number'
+    'declared_chats_freq', 'phone_number','picture_uploaded'
 ]
 users_chats_col_list = [
     'email', 'ONE_ON_ONE', 'FOUR_ON_ONE', 'MOCK_INTERVIEW'
@@ -302,39 +302,42 @@ def upload_images(users:list, folder: str, poolId:str):
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__)) + "/" + folder
     bucket_name = "aspire-user-profile"
     for u in users:
-        if u["prefix"]:
-            prefix = u["prefix"].strip() + " "
-        else:
-            prefix = ""
-        if len(u['email'].split(';')) > 1:
-            u['email'] = u['email'].split(';')[0]
-        name = u["family_name"] + '_' + prefix + u["given_name"]
-        print("adding image of " + name)
-        image_arg = 'image/' #need to pass in as content type so that image renders on browser rather than downloading
-        for filename in os.listdir(ROOT_DIR):
-            if filename.startswith(name):
-                if filename[filename.rfind(".")+1:] == 'jpg':
-                    image_arg += 'jpeg'
-                else:
-                    image_arg += filename[filename.rfind(".")+1:]
-                name=filename
-        path_name = u["email"] + '/pictures/' + name #creates the directory structure in the s3
-        try:
-            s3.meta.client.upload_file(folder + name, bucket_name, path_name, ExtraArgs={'ACL': 'public-read','ContentType': image_arg})
-        except:
-            print("error while uploading image of user " + u["email"])
-            
-        s3_image_url = "https://" + bucket_name + ".s3.amazonaws.com/" + path_name
-        try:
-            response = aws_client.admin_update_user_attributes(
-                UserPoolId=poolId,
-                Username=u['email'],
-                UserAttributes=[
-                    {'Name': "picture", 'Value': s3_image_url}
-                ]
-            )
-        except:
-            traceback.print_exc()
+        if u["email"]:
+            if u["prefix"]:
+                prefix = u["prefix"].strip() + " "
+            else:
+                prefix = ""
+            if len(u['email'].split(';')) > 1:
+                u['email'] = u['email'].split(';')[0]
+            name = u["family_name"].strip() + '_' + prefix + u["given_name"].strip()
+            print("adding image of " + name)
+            image_arg = 'image/' #need to pass in as content type so that image renders on browser rather than downloading
+            for filename in os.listdir(ROOT_DIR):
+                if filename.startswith(name):
+                    if filename[filename.rfind(".")+1:] == 'jpg':
+                        image_arg += 'jpeg'
+                    else:
+                        image_arg += filename[filename.rfind(".")+1:]
+                    name=filename
+            if (u["picture_uploaded"] != 'Yes'):
+                    name = "blank_profile.png"
+            path_name = u["email"] + '/pictures/' + name #creates the directory structure in the s3
+            try:
+                s3.meta.client.upload_file(folder + name, bucket_name, path_name, ExtraArgs={'ACL': 'public-read','ContentType': image_arg})
+            except:
+                print("error while uploading image of user " + u["email"])
+                
+            s3_image_url = "https://" + bucket_name + ".s3.amazonaws.com/" + path_name
+            try:
+                response = aws_client.admin_update_user_attributes(
+                    UserPoolId=poolId,
+                    Username=u['email'],
+                    UserAttributes=[
+                        {'Name': "picture", 'Value': s3_image_url}
+                    ]
+                )
+            except:
+                traceback.print_exc()
  
 # --- HELPERS END---
 
