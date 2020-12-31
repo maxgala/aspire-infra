@@ -1,24 +1,24 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'This template provisions a certificate for aspire.maxgala.com domain'
+Description: 'This template provisions a certificate for *.aspire.maxgala.com domain'
 
 Parameters:
-  AspireDomainName:
+  AspireApiDomainName:
     Type: String
     Default: '*.aspire.maxgala.com'
     Description: Domain name
 
 Resources:
-  AspireCertificate:
+  AspireApiCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties: 
-      DomainName: !Ref AspireDomainName
+      DomainName: !Ref AspireApiDomainName
       DomainValidationOptions: 
-        - DomainName: !Ref AspireDomainName
+        - DomainName: !Ref AspireApiDomainName
           ValidationDomain: maxgala.com
       ValidationMethod: DNS
 
 Outputs:
   CertificateArn:
     Description: 'Certificate ARN'
-    Value: !Ref AspireCertificate
+    Value: !Ref AspireApiCertificate
