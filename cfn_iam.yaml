@@ -187,6 +187,7 @@ Resources:
           Effect: Allow
           Action:
             - 'iam:CreateRole'
+            - 'iam:CreateUser'
             - 'iam:DetachRolePolicy'
             - 'iam:AttachRolePolicy'
             - 'iam:DeleteRole'
