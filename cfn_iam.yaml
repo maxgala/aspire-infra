@@ -62,6 +62,15 @@ Resources:
     Properties:
       ServiceToken: !GetAtt IAMPasswordPolicyResource.Arn
       Region: !Ref "AWS::Region"
+      Policies:
+      - PolicyName: GetFunctionConfigPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: 'Allow'
+            Action:
+            - 'lambda:GetFunctionConfiguration'
+            Resource: '*'
 
   IAMPasswordPolicyResource:
     Type: "AWS::Lambda::Function"
@@ -157,7 +166,7 @@ Resources:
       - 'arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess'
       - 'arn:aws:iam::aws:policy/AWSLambdaReadOnlyAccess'
       - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
-      
+
   AutomationPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -186,6 +195,7 @@ Resources:
             - 'iam:AttachRolePolicy'
             - 'iam:DeleteRole'
             - 'iam:DeleteRolePolicy'
+            - 'iam:DeleteUser'
             - 'iam:GetRole'
             - 'iam:GetUser'
             - 'iam:PassRole'
