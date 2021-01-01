@@ -4,9 +4,149 @@ Description: This template provisions IAM groups, an automation user, and users 
 Parameters:
   UserPassword:
     Type: String
-    Default: 'password'
+    Default: 'Password123!'
+  
+  MaxPasswordAge:
+    Type: 'Number'
+    Description: 'Maximum age for passwords'
+    Default: 90
+    ConstraintDescription: '(90-365 days)'
+    MinValue: 90
+    MaxValue: 365
+  MinPasswordLength:
+    Type: 'Number'
+    Description: 'Minimum password length'
+    Default: 10
+    ConstraintDescription: '(8-128 characters)'
+    MinValue: 8
+    MaxValue: 128
+  PasswordHistory:
+    Type: 'Number'
+    Description: 'Number of previous passwords to remember'
+    Default: 3
+    ConstraintDescription: '(1-24 passwords)'
+    MinValue: 1
+    MaxValue: 24
+  RequireLowercaseChars:
+    Type: 'String'
+    Description: 'Require at least one lowercase character'
+    Default: 'True'
+    AllowedValues:
+    - 'True'
+    - 'False'
+  RequireNumbers:
+    Type: 'String'
+    Description: 'Require at least one number'
+    Default: 'True'
+    AllowedValues:
+    - 'True'
+    - 'False'
+  RequireSymbols:
+    Type: 'String'
+    Description: 'Require at least one symbol'
+    Default: 'True'
+    AllowedValues:
+    - 'True'
+    - 'False'
+  RequireUppercaseChars:
+    Type: 'String'
+    Description: 'Require at least one uppercase character'
+    Default: 'True'
+    AllowedValues:
+    - 'True'
+    - 'False'
 
 Resources:
+  IAMPasswordPolicy:
+    Type: 'Custom::IAMPolicyResource'
+    Properties:
+      ServiceToken: !GetAtt IAMPasswordPolicyResource.Arn
+      Region: !Ref "AWS::Region"
+
+  IAMPasswordPolicyResource:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Runtime: python3.6
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Timeout: 30
+      Role: !GetAtt IAMPasswordPolicyResourceExecutionRole.Arn
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          from botocore.exceptions import ClientError
+          import json
+          import cfnresponse
+          iam = boto3.client("iam")
+          # Lambda entry point
+          def lambda_handler(event, context):
+            if event['RequestType'] == 'Create' or event['RequestType'] == 'Update':
+              res, reason = update_policy()
+            elif event['RequestType'] == 'Delete':
+              res, reason = delete_policy()
+            else:
+              res = False
+              reason = "Unknown operation: " + event['RequestType']
+            responseData = {}
+            responseData['Reason'] = reason
+            if res:
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+            else:
+              cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+          def update_policy():
+            try:
+              response = iam.update_account_password_policy(
+                  AllowUsersToChangePassword=True,
+                  HardExpiry=False,
+                  MaxPasswordAge=${MaxPasswordAge},
+                  MinimumPasswordLength=${MinPasswordLength},
+                  RequireLowercaseCharacters=${RequireLowercaseChars},
+                  RequireNumbers=${RequireNumbers},
+                  RequireSymbols=${RequireSymbols},
+                  RequireUppercaseCharacters=${RequireUppercaseChars},
+                  PasswordReusePrevention=${PasswordHistory})
+              return(True, response)
+            except Exception as e:
+              return (False, "Cannot update policy: " + str(e))
+          def delete_policy():
+            try:
+              policy = iam.get_account_password_policy()
+              response = iam.delete_account_password_policy()
+              return (True, response)
+            except Exception as e:
+              return (False, "Cannot delete policy: " + str(e))
+
+  IAMPasswordPolicyResourceExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: IAMPasswordCreatorPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: 'Allow'
+            Action:
+            - 'logs:CreateLogGroup'
+            - 'logs:CreateLogStream'
+            - 'logs:PutLogEvents'
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - iam:GetAccountPasswordPolicy
+              - iam:UpdateAccountPasswordPolicy
+              - iam:DeleteAccountPasswordPolicy
+            Resource: "*"
+
   DeveloperPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -51,6 +191,7 @@ Resources:
             - 'iam:AttachRolePolicy'
             - 'iam:DeleteRole'
             - 'iam:GetRole'
+            - 'iam:GetUser'
             - 'iam:PassRole'
             - 'iam:PutRolePolicy'
             - 'iam:GetRolePolicy'
