@@ -199,6 +199,10 @@ Resources:
             - 'iam:GetRolePolicy'
             - 'iam:CreateServiceLinkedRole'
             - 'iam:UpdateLoginProfile'
+            - 'iam:RemoveUserFromGroup'
+            - 'iam:DeleteLoginProfile'
+            - 'iam:ListAccessKeys'
+            - 'lambda:CreateFunction'
           Resource:
             - '*'
       Groups:
