@@ -31,79 +31,18 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-        - Sid: Deploy CFN
+        - Sid: DeployCFN
           Effect: Allow
           Action:
             - 'cloudformation:*'
           Resource:
             - '*'
-        - Sid: Disallow CFN stack deletion
+        - Sid: PreventCFNDeletion
           Effect: Deny
           Action:
             - 'cloudformation:DeleteStack'
           Resource:
             - '*'
-        - Effect: Allow
-          Action:
-            - 'rds-db:connect'
-            - 'iam:CreateRole'
-            - 'iam:DetachRolePolicy'
-            - 'iam:AttachRolePolicy'
-            - 'iam:DeleteRole'
-            - 'iam:GetRole'
-            - 'iam:PassRole'
-            - 'iam:PutRolePolicy'
-            - 'lambda:CreateFunction'
-            - 'lambda:DeleteFunction'
-            - 'lambda:GetFunction'
-            - 'lambda:GetFunctionConfiguration'
-            - 'lambda:AddPermission'
-            - 'lambda:RemovePermission'
-            - 'lambda:UpdateFunctionCode'
-            - 'lambda:ListTags'
-            - 'lambda:TagResource'
-            - 'lambda:UntagResource'
-            - 'lambda:UpdateFunctionConfiguration'
-            - 'apigateway:POST'
-            - 'apigateway:PATCH'
-            - 'apigateway:DELETE'
-            - 'apigateway:GET'
-            - 'apigateway:PUT'
-          Resource: '*'
-        - Sid: 'ListBuckets'
-          Effect: Allow
-          Action:
-            - 's3:GetBucketLocation'
-            - 's3:ListAllMyBuckets'
-            - 's3:ListBucket'
-          Resource: 'arn:aws:s3:::*'
-        - Sid: 'GetObjectsInsideLambdaFunction'
-          Effect: Allow
-          Action:
-            - 's3:GetObject'
-            - 's3:GetObjectAcl'
-          Resource: 
-          - '*'
-        - Sid: 'PackageAndDeploySAMApplication'
-          Effect: Allow
-          Action:
-          - 's3:PutObject'
-          - 'cloudformation:CreateChangeSet'
-          - 'cloudformation:DescribeChangeSet'
-          - 'cloudformation:ExecuteChangeSet'
-          - 'cloudformation:DescribeStacks'
-          - 'cloudformation:DescribeStackEvents'
-          - 'cloudformation:GetTemplateSummary'
-          Resource: 
-          - '*'
-          - 'arn:aws:cloudformation:*'
-        - Sid: 'AllowLambdaFunctionsToQueryAndUpdateCognitoAsAdmin'
-          Effect: Allow
-          Action:
-          - 'cognito-idp:AdminGetUser'
-          - 'cognito-idp:AdminUpdateUserAttributes'
-          Resource:
-          - 'arn:aws:cognito-idp:*'
       Groups:
         - !Ref AutomationGroup 
 
@@ -121,7 +60,7 @@ Resources:
       Groups:
         - !Ref AutomationGroup
 
-  User1:
+  SalehBakhit:
     Type: AWS::IAM::User
     Properties:
       UserName: saleh.bakhit@hotmail.com
@@ -132,7 +71,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User2:
+  AhmedHamodi:
     Type: AWS::IAM::User
     Properties:
       UserName: ahmed.r.hamodi@gmail.com
@@ -143,7 +82,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User3:
+  ArsalanRana:
     Type: AWS::IAM::User
     Properties:
       UserName: arsalan.rana@maxgala.com
@@ -154,7 +93,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User4:
+  TayyabTanveer:
     Type: AWS::IAM::User
     Properties:
       UserName: tayyaabtanveer@gmail.com
@@ -165,7 +104,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User6:
+  ShehryarSuleman:
     Type: AWS::IAM::User
     Properties:
       UserName: shehryarsuleman@gmail.com
@@ -176,7 +115,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User9:
+  NabaSiddiqui:
     Type: AWS::IAM::User
     Properties:
       UserName: naba@poketapp.com
@@ -187,18 +126,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User11:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: xshehryar@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
-  User12:
+  HafsaZahid:
     Type: AWS::IAM::User
     Properties:
       UserName: hafsabzahid@gmail.com
@@ -209,7 +137,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User13:
+  AhmedJamal:
     Type: AWS::IAM::User
     Properties:
       UserName: ahmedjamal0208@gmail.com
@@ -220,7 +148,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User14:
+  RizTaha:
     Type: AWS::IAM::User
     Properties:
       UserName: riztaha@gmail.com
@@ -231,18 +159,7 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User15:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: kshahidmalik@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
-  User16:
+  KashifSiddiqui:
     Type: AWS::IAM::User
     Properties:
       UserName: kashif89@gmail.com
