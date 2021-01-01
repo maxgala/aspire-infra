@@ -153,17 +153,6 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User5:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: malak.ali@maxgala.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
   User6:
     Type: AWS::IAM::User
     Properties:
@@ -175,43 +164,10 @@ Resources:
       Groups:
         - !Ref DeveloperGroup
 
-  User7:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: sammer.haq@gmail.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
-  User8:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: aazar.zafar@maxgala.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
   User9:
     Type: AWS::IAM::User
     Properties:
       UserName: naba@poketapp.com
-      LoginProfile:
-        Password:
-          Ref: UserPassword
-        PasswordResetRequired: true
-      Groups:
-        - !Ref DeveloperGroup
-
-  User10:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: siddiquiabdullah92@gmail.com
       LoginProfile:
         Password:
           Ref: UserPassword

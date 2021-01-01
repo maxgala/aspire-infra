@@ -1,0 +1,23 @@
+name: CD
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ASPIRE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ASPIRE_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+      - name: Deploy IAM
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: Aspire-IAM
+          template: cfn_iam.yaml
+          no-fail-on-empty-changeset: "1"
