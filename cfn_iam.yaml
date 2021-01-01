@@ -31,6 +31,18 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
+        - Sid: Deploy CFN
+          Effect: Allow
+          Action:
+            - 'cloudformation:*'
+          Resource:
+            - '*'
+        - Sid: Disallow CFN stack deletion
+          Effect: Deny
+          Action:
+            - 'cloudformation:DeleteStack'
+          Resource:
+            - '*'
         - Effect: Allow
           Action:
             - 'rds-db:connect'
