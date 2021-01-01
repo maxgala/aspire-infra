@@ -207,6 +207,18 @@ Resources:
             - 'iam:DeleteLoginProfile'
             - 'iam:ListAccessKeys'
             - 'lambda:CreateFunction'
+            - 'lambda:DeleteFunction'
+            - 'lambda:GetFunction'
+            - 'lambda:GetFunctionConfiguration'
+            - 'lambda:GetLayerVersion'
+            - 'lambda:AddPermission'
+            - 'lambda:RemovePermission'
+            - 'lambda:PublishLayerVersion'
+            - 'lambda:UpdateFunctionCode'
+            - 'lambda:ListTags'
+            - 'lambda:TagResource'
+            - 'lambda:UntagResource'
+            - 'lambda:UpdateFunctionConfiguration'
           Resource:
             - '*'
       Groups:
