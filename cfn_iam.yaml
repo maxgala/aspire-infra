@@ -206,6 +206,8 @@ Resources:
             - 'iam:RemoveUserFromGroup'
             - 'iam:DeleteLoginProfile'
             - 'iam:ListAccessKeys'
+            - 'iam:AddUserToGroup'
+            - 'iam:CreateLoginProfile'
           Resource:
             - '*'
         - Sid: EnforceStrongPassword
