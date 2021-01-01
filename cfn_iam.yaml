@@ -43,6 +43,20 @@ Resources:
             - 'cloudformation:DeleteStack'
           Resource:
             - '*'
+        - Sid: UpdateUsers
+          Effect: Allow
+          Action:
+            - 'iam:CreateRole'
+            - 'iam:DetachRolePolicy'
+            - 'iam:AttachRolePolicy'
+            - 'iam:DeleteRole'
+            - 'iam:GetRole'
+            - 'iam:PassRole'
+            - 'iam:PutRolePolicy'
+            - 'iam:GetRolePolicy'
+            - 'iam:CreateServiceLinkedRole'
+          Resource:
+            - '*'
       Groups:
         - !Ref AutomationGroup 
 
