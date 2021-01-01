@@ -4,7 +4,7 @@ Description: This template provisions IAM groups, an automation user, and users 
 Parameters:
   UserPassword:
     Type: String
-    Default: 'Password123!'
+    Default: 'AspirePassword123!'
   
   MaxPasswordAge:
     Type: 'Number'
@@ -16,9 +16,9 @@ Parameters:
   MinPasswordLength:
     Type: 'Number'
     Description: 'Minimum password length'
-    Default: 10
-    ConstraintDescription: '(8-128 characters)'
-    MinValue: 8
+    Default: 14
+    ConstraintDescription: '(14-128 characters)'
+    MinValue: 14
     MaxValue: 128
   PasswordHistory:
     Type: 'Number'
