@@ -191,6 +191,7 @@ Resources:
             - 'iam:DetachRolePolicy'
             - 'iam:AttachRolePolicy'
             - 'iam:DeleteRole'
+            - 'iam:DeleteRolePolicy'
             - 'iam:GetRole'
             - 'iam:GetUser'
             - 'iam:PassRole'
