@@ -147,23 +147,17 @@ Resources:
               - iam:DeleteAccountPasswordPolicy
             Resource: "*"
 
-  DeveloperPolicy:
-    Type: 'AWS::IAM::Policy'
-    Properties:
-      PolicyName: DeveloperPolicy
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - '*'
-            Resource: '*'
-      Groups:
-        - !Ref DeveloperGroup
-
   DeveloperGroup:
     Type: AWS::IAM::Group
-
+    Properties:
+      ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AmazonRDSReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AWSLambdaReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
+      
   AutomationPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
