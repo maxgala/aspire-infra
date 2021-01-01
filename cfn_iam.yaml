@@ -206,6 +206,11 @@ Resources:
             - 'iam:RemoveUserFromGroup'
             - 'iam:DeleteLoginProfile'
             - 'iam:ListAccessKeys'
+          Resource:
+            - '*'
+        - Sid: EnforceStrongPassword
+          Effect: Allow
+          Action: 
             - 'lambda:CreateFunction'
             - 'lambda:DeleteFunction'
             - 'lambda:GetFunction'
@@ -219,6 +224,7 @@ Resources:
             - 'lambda:TagResource'
             - 'lambda:UntagResource'
             - 'lambda:UpdateFunctionConfiguration'
+            - 'lambda:InvokeFunction'
           Resource:
             - '*'
       Groups:
