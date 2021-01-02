@@ -238,6 +238,7 @@ Resources:
             - 's3:GetObject'
             - 's3:GetObjectAcl'
             - 's3:GetObjectTagging'
+            - 's3:ListBucket'
             - 's3:ListObjectsV2'
             - 's3:ListObjects'
             - 's3:PutObject'
