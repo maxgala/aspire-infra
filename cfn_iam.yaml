@@ -242,7 +242,7 @@ Resources:
             - 's3:ListObjects'
             - 's3:PutObject'
             - 's3:PutObjectTagging'
-          Resources:
+          Resource:
             - 'arn:aws:s3:::aspire-app/*'
       Groups:
         - !Ref AutomationGroup 
