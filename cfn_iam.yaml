@@ -243,7 +243,7 @@ Resources:
             - 's3:PutObject'
             - 's3:PutObjectTagging'
           Resource:
-            - 'arn:aws:s3:::*'
+            - '*'
       Groups:
         - !Ref AutomationGroup 
 
