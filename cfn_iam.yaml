@@ -234,6 +234,7 @@ Resources:
             - 's3:ListObjects'
             - 's3:PutObject'
             - 's3:PutObjectTagging'
+            - 'cloudfront:CreateInvalidation'
           Resource:
             - '*'
       Groups:
