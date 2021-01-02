@@ -154,18 +154,90 @@ Resources:
               - iam:UpdateAccountPasswordPolicy
               - iam:DeleteAccountPasswordPolicy
             Resource: "*"
-
-  DeveloperGroup:
-    Type: AWS::IAM::Group
-    Properties:
-      ManagedPolicyArns:
-      - 'arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess'
-      - 'arn:aws:iam::aws:policy/AmazonRDSReadOnlyAccess'
-      - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
-      - 'arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess'
-      - 'arn:aws:iam::aws:policy/AWSLambdaReadOnlyAccess'
-      - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
   
+  AutomationPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: AutomationPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Sid: DeployCFN
+          Effect: Allow
+          Action:
+            - 'cloudformation:*'
+          Resource:
+            - '*'
+        - Sid: PreventCFNDeletion
+          Effect: Deny
+          Action:
+            - 'cloudformation:DeleteStack'
+          Resource:
+            - '*'
+        - Sid: UpdateUsersAndPermissions
+          Effect: Allow
+          Action:
+            - 'iam:CreateRole'
+            - 'iam:CreateUser'
+            - 'iam:CreateGroup'
+            - 'iam:DetachRolePolicy'
+            - 'iam:AttachRolePolicy'
+            - 'iam:DeleteRole'
+            - 'iam:DeleteRolePolicy'
+            - 'iam:DeleteUser'
+            - 'iam:GetRole'
+            - 'iam:GetUser'
+            - 'iam:PassRole'
+            - 'iam:PutRolePolicy'
+            - 'iam:GetRolePolicy'
+            - 'iam:CreateServiceLinkedRole'
+            - 'iam:UpdateLoginProfile'
+            - 'iam:RemoveUserFromGroup'
+            - 'iam:DeleteLoginProfile'
+            - 'iam:ListAccessKeys'
+            - 'iam:AddUserToGroup'
+            - 'iam:CreateLoginProfile'
+            - 'iam:PutGroupPolicy'
+          Resource:
+            - '*'
+        - Sid: EnforceStrongPassword
+          Effect: Allow
+          Action: 
+            - 'lambda:CreateFunction'
+            - 'lambda:DeleteFunction'
+            - 'lambda:GetFunction'
+            - 'lambda:GetFunctionConfiguration'
+            - 'lambda:GetLayerVersion'
+            - 'lambda:AddPermission'
+            - 'lambda:RemovePermission'
+            - 'lambda:PublishLayerVersion'
+            - 'lambda:UpdateFunctionCode'
+            - 'lambda:ListTags'
+            - 'lambda:TagResource'
+            - 'lambda:UntagResource'
+            - 'lambda:UpdateFunctionConfiguration'
+            - 'lambda:InvokeFunction'
+          Resource:
+            - '*'
+        - Sid: DeployAppToS3
+          Effect: Allow
+          Action:
+            - 's3:CopyObject'
+            - 's3:DeleteObject'
+            - 's3:GetBucketLocation'
+            - 's3:GetObject'
+            - 's3:GetObjectAcl'
+            - 's3:GetObjectTagging'
+            - 's3:ListBucket'
+            - 's3:ListObjectsV2'
+            - 's3:ListObjects'
+            - 's3:PutObject'
+            - 's3:PutObjectTagging'
+          Resource:
+            - '*'
+      Groups:
+        - !Ref AutomationGroup
+
   WebAppPolicy:
     Type: AWS::IAM::Policy
     Properties:
@@ -397,90 +469,19 @@ Resources:
       Groups:
         - !Ref WebAppGroup
 
-  AutomationPolicy:
-    Type: 'AWS::IAM::Policy'
-    Properties:
-      PolicyName: AutomationPolicy
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-        - Sid: DeployCFN
-          Effect: Allow
-          Action:
-            - 'cloudformation:*'
-          Resource:
-            - '*'
-        - Sid: PreventCFNDeletion
-          Effect: Deny
-          Action:
-            - 'cloudformation:DeleteStack'
-          Resource:
-            - '*'
-        - Sid: UpdateUsersAndPermissions
-          Effect: Allow
-          Action:
-            - 'iam:CreateRole'
-            - 'iam:CreateUser'
-            - 'iam:DetachRolePolicy'
-            - 'iam:AttachRolePolicy'
-            - 'iam:DeleteRole'
-            - 'iam:DeleteRolePolicy'
-            - 'iam:DeleteUser'
-            - 'iam:GetRole'
-            - 'iam:GetUser'
-            - 'iam:PassRole'
-            - 'iam:PutRolePolicy'
-            - 'iam:GetRolePolicy'
-            - 'iam:CreateServiceLinkedRole'
-            - 'iam:UpdateLoginProfile'
-            - 'iam:RemoveUserFromGroup'
-            - 'iam:DeleteLoginProfile'
-            - 'iam:ListAccessKeys'
-            - 'iam:AddUserToGroup'
-            - 'iam:CreateLoginProfile'
-            - 'iam:PutGroupPolicy'
-          Resource:
-            - '*'
-        - Sid: EnforceStrongPassword
-          Effect: Allow
-          Action: 
-            - 'lambda:CreateFunction'
-            - 'lambda:DeleteFunction'
-            - 'lambda:GetFunction'
-            - 'lambda:GetFunctionConfiguration'
-            - 'lambda:GetLayerVersion'
-            - 'lambda:AddPermission'
-            - 'lambda:RemovePermission'
-            - 'lambda:PublishLayerVersion'
-            - 'lambda:UpdateFunctionCode'
-            - 'lambda:ListTags'
-            - 'lambda:TagResource'
-            - 'lambda:UntagResource'
-            - 'lambda:UpdateFunctionConfiguration'
-            - 'lambda:InvokeFunction'
-          Resource:
-            - '*'
-        - Sid: DeployAppToS3
-          Effect: Allow
-          Action:
-            - 's3:CopyObject'
-            - 's3:DeleteObject'
-            - 's3:GetBucketLocation'
-            - 's3:GetObject'
-            - 's3:GetObjectAcl'
-            - 's3:GetObjectTagging'
-            - 's3:ListBucket'
-            - 's3:ListObjectsV2'
-            - 's3:ListObjects'
-            - 's3:PutObject'
-            - 's3:PutObjectTagging'
-          Resource:
-            - '*'
-      Groups:
-        - !Ref AutomationGroup
-
   AutomationGroup:
     Type: AWS::IAM::Group
+
+  DeveloperGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AmazonRDSReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/AWSLambdaReadOnlyAccess'
+      - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
 
   WebAppGroup:
     Type: AWS::IAM::Group    
