@@ -5,7 +5,6 @@ Parameters:
   UserPassword:
     Type: String
     Default: 'AspirePassword123!'
-  
   MaxPasswordAge:
     Type: 'Number'
     Description: 'Maximum age for passwords'
@@ -186,7 +185,7 @@ Resources:
             - 'cloudformation:DeleteStack'
           Resource:
             - '*'
-        - Sid: UpdateUsers
+        - Sid: UpdateUsersAndPermissions
           Effect: Allow
           Action:
             - 'iam:CreateRole'
@@ -208,6 +207,7 @@ Resources:
             - 'iam:ListAccessKeys'
             - 'iam:AddUserToGroup'
             - 'iam:CreateLoginProfile'
+            - 'iam:PutGroupPolicy'
           Resource:
             - '*'
         - Sid: EnforceStrongPassword
