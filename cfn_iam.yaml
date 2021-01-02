@@ -198,6 +198,7 @@ Resources:
             - 'iam:AddUserToGroup'
             - 'iam:CreateLoginProfile'
             - 'iam:PutGroupPolicy'
+            - 'iam:AttachGroupPolicy'
           Resource:
             - '*'
         - Sid: EnforceStrongPassword
