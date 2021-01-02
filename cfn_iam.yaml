@@ -337,6 +337,7 @@ Resources:
       - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
       - 'arn:aws:iam::aws:policy/AmazonSESFullAccess'
       - 'arn:aws:iam::aws:policy/AmazonCognitoReadOnly'
+      - 'arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials'
 
   WebAppGroup:
     Type: AWS::IAM::Group
