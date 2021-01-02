@@ -336,6 +336,7 @@ Resources:
       - 'arn:aws:iam::aws:policy/AWSLambdaReadOnlyAccess'
       - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
       - 'arn:aws:iam::aws:policy/AmazonSESFullAccess'
+      - 'arn:aws:iam::aws:policy/AmazonCognitoReadOnly'
 
   WebAppGroup:
     Type: AWS::IAM::Group
