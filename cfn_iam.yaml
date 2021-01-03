@@ -248,10 +248,11 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement: Allow
-        Action:
-        - iam:CreateAccessKey
-        Resource:
-        - '*'
+        - Effect: Allow
+          Action:
+          - 'iam:CreateAccessKey'
+          Resource:
+          - '*'
       Groups:
         - !Ref DeveloperGroup
 
