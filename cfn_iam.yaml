@@ -238,6 +238,15 @@ Resources:
             - 'cloudfront:CreateInvalidation'
           Resource:
             - '*'
+        - Sid: DeployAPIs
+          Effect: Allow
+          Action:
+            - 'apigateway:POST'
+            - 'apigateway:PATCH'
+            - 'apigateway:DELETE'
+            - 'apigateway:GET'
+            - 'apigateway:PUT'
+          Resource: '*'
       Groups:
         - !Ref AutomationGroup
 
