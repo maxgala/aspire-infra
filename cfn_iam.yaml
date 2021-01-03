@@ -251,6 +251,7 @@ Resources:
         - Effect: Allow
           Action:
           - 'iam:CreateAccessKey'
+          - 'cognito-idp:AdminInitiateAuth'
           Resource:
           - '*'
       Groups:
