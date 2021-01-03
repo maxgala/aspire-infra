@@ -241,7 +241,7 @@ Resources:
         - !Ref AutomationGroup
 
   DeveloperPolicy:
-    Type: AWS:IAM:Policy
+    Type: AWS::IAM::Policy
     Properties:
       PolicyName: DeveloperPolicy
       PolicyDocument:
