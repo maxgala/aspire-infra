@@ -251,7 +251,7 @@ Resources:
         Action:
         - iam:CreateAccessKey
         Resource:
-        - '&'
+        - '*'
       Groups:
         - !Ref DeveloperGroup
 
