@@ -240,6 +240,20 @@ Resources:
       Groups:
         - !Ref AutomationGroup
 
+  DeveloperPolicy:
+    Type: AWS:IAM:Policy
+    Properties:
+      PolicyName: DeveloperPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement: Allow
+        Action:
+        - iam:CreateAccessKey
+        Resource:
+        - '&'
+      Groups:
+        - !Ref DeveloperGroup
+
   WebAppPolicy:
     Type: AWS::IAM::Policy
     Properties:
