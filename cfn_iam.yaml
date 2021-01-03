@@ -247,7 +247,7 @@ Resources:
       PolicyName: DeveloperPolicy
       PolicyDocument:
         Version: 2012-10-17
-        Statement: Allow
+        Statement:
         - Effect: Allow
           Action:
           - 'iam:CreateAccessKey'
