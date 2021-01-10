@@ -164,7 +164,7 @@ Resources:
           - Effect: "Allow"
             Principal:
               AWS:
-              - "arn:aws:iam::${AWS::AccountId}:user/ops@aspire.com"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:user/ops@aspire.com"
             Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
