@@ -215,6 +215,7 @@ Resources:
             - 'iam:PutGroupPolicy'
             - 'iam:AttachGroupPolicy'
             - 'iam:DeleteGroupPolicy'
+            - 'iam:DetachGroupPolicy'
           Resource:
             - '*'
         - Sid: EnforceStrongPassword
