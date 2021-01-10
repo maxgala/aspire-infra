@@ -155,6 +155,21 @@ Resources:
               - iam:DeleteAccountPasswordPolicy
             Resource: "*"
   
+  AWSSupportAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS:
+              - "arn:aws:iam::${AWS::AccountId}:user/ops@aspire.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AWSSupportAccess'
+
   AutomationPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -376,7 +391,6 @@ Resources:
     Properties:
       ManagedPolicyArns:
       - 'arn:aws:iam::aws:policy/AmazonSESFullAccess'
-      - 'arn:aws:iam::aws:policy/AWSSupportAccess'
 
   AutomationUser:
     Type: AWS::IAM::User
