@@ -428,6 +428,17 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
+ 
+ TalhaBakhit:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: talha.sajun@maxgala.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
 
   AhmedHamodi:
     Type: AWS::IAM::User
