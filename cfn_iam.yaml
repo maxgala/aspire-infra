@@ -183,6 +183,7 @@ Resources:
             - 'cloudformation:*'
             - 'rds:*'
             - 'ec2:DescribeAccountAttributes'
+            - 'events:PutRule'
           Resource:
             - '*'
         - Sid: PreventCFNDeletion
