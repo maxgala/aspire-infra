@@ -181,6 +181,7 @@ Resources:
           Effect: Allow
           Action:
             - 'cloudformation:*'
+            - 'rds:*'
           Resource:
             - '*'
         - Sid: PreventCFNDeletion
