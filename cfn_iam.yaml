@@ -182,6 +182,7 @@ Resources:
           Action:
             - 'cloudformation:*'
             - 'rds:*'
+            - 'ec2:DescribeAccountAttributes'
           Resource:
             - '*'
         - Sid: PreventCFNDeletion
