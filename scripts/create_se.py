@@ -47,7 +47,7 @@ from datetime import datetime
 # TODO: create tool that will take a format of a command line input (below) and create the arg parsers for it
 parser = argparse.ArgumentParser(description='add/remove SEs and populate Chat table from CSV')
 parser.add_argument('-file', type=lambda x: is_valid_file(parser, x), required=True, help='Relative Path to CSV file')
-parser.add_argument('-images_folder', type=str, required=True, help='Relative Path to images folder.')
+parser.add_argument('-images_folder', type=str, required=False, help='Relative Path to images folder.')
 parser.add_argument('-rows', type=int, required=True, help='Number of SEs in CSV file')
 parser.add_argument('-pool_id', type=str, required=True, help='Cognito User Pool Id')
 parser.add_argument('-id_token', type=str, required=False, help='Cognito Id Token (Admin Required)')
@@ -63,6 +63,7 @@ options_group = parser.add_mutually_exclusive_group(required=True)
 options_group.add_argument('-a', '--all', action='store_const', dest='type', const='all', help='Process Users and Chats')
 options_group.add_argument('-u', '--users', action='store_const', dest='type', const='users', help='Process Users Only')
 options_group.add_argument('-c', '--chats', action='store_const', dest='type', const='chats', help='Process Chats Only')
+options_group.add_argument('-p', '--pictures', action='store_const', dest='type', const='chats', help='Process Pictures Only')
 
 aws_client = boto3.client('cognito-idp')
 s3 = boto3.resource('s3')
@@ -70,10 +71,13 @@ s3 = boto3.resource('s3')
 users_col_list = [
     'email', 'family_name', 'given_name', 'prefix', 'gender', 'industry',
     'industry_tags', 'position', 'company', 'country', 'region',
-    'declared_chats_freq', 'phone_number','picture_uploaded'
+    'declared_chats_freq', 'phone_number'
 ]
 users_chats_col_list = [
-    'email', 'ONE_ON_ONE', 'FOUR_ON_ONE', 'MOCK_INTERVIEW'
+    'email', 'ONE_ON_ONE', 'MOCK_INTERVIEW'
+]
+users_pictures_col_list = [
+    'email', 'family_name', 'given_name', 'prefix', 'picture_uploaded'
 ]
 # AWS Cognito standard attributes. Every user will have them by default (even if not used)
 # docs: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html
@@ -91,20 +95,6 @@ class ChatType(enum.Enum):
 
 
 # --- COGNITO APIs BEGIN ---
-def admin_add_user_to_group(username: str, group_name: str, poolId: str):
-    print("add user to group: {} {}".format(username, group_name))
-    try:
-        response = aws_client.admin_add_user_to_group(
-            UserPoolId=poolId,
-            Username=username,
-            GroupName=group_name
-        )
-        # print("response= {}".format(response))
-        return response
-    except:
-        traceback.print_exc()
-    return None
-
 # docs: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp.html#CognitoIdentityProvider.Client.admin_create_user
 def admin_create_user(user: dict, poolId: str):
     print("sign up user: {}".format(user['email']))
@@ -186,8 +176,8 @@ def create_user(user: dict, user_type: str, poolId: str):
         if user['phone_number'][0] != '+':
             user['phone_number'] = '+1' + user['phone_number']
 
-    start_date = user.get('start_date') or "01/01/2021"
-    end_date = user.get('end_date') or "31/12/2021"
+    start_date = user.get('start_date') or "01/02/2021"
+    end_date = user.get('end_date') or "31/01/2022"
     user['start_date'] = str(int(datetime.strptime(start_date, "%d/%m/%Y").timestamp()))
     user['end_date'] = str(int(datetime.strptime(end_date, "%d/%m/%Y").timestamp()))
 
@@ -200,12 +190,13 @@ def create_user(user: dict, user_type: str, poolId: str):
         address['city'] = user.pop('city')
     user['address'] = json.dumps(address)
 
+    user['resume'] = 'https://aspire-user-profile.s3.amazonaws.com/blank_resume.pdf'
+    user['picture'] = 'https://aspire-user-profile.s3.amazonaws.com/blank_profile.png'
     user['birthdate'] = '1970-01-01'
     user['user_type'] = user_type
     user['declared_chats_freq'] = '0'
     user['remaining_chats_freq'] = '0'
     user['credits'] = '0'
-    #user['picture'] = 'url'
     admin_create_user(user, poolId)
 
 def create_user_chats(user_chats: dict, delimiter=';'):
@@ -214,7 +205,7 @@ def create_user_chats(user_chats: dict, delimiter=';'):
     print("create user chats: {}".format(user_chats['email']))
 
     user_chats['ONE_ON_ONE'] = user_chats['ONE_ON_ONE'].split(delimiter) if user_chats['ONE_ON_ONE'] != 'none' else []
-    user_chats['FOUR_ON_ONE'] = user_chats['FOUR_ON_ONE'].split(delimiter) if user_chats['FOUR_ON_ONE'] != 'none' else []
+    # user_chats['FOUR_ON_ONE'] = user_chats['FOUR_ON_ONE'].split(delimiter) if user_chats['FOUR_ON_ONE'] != 'none' else []
     user_chats['MOCK_INTERVIEW'] = user_chats['MOCK_INTERVIEW'].split(delimiter) if user_chats['MOCK_INTERVIEW'] != 'none' else []
 
     chats = []
@@ -244,17 +235,21 @@ def create_user_chats(user_chats: dict, delimiter=';'):
     if response.status_code != 201:
         print("chats creation for user {} failed. {}".format(user_chats['email'], response))
 
-def create_all(users: list, users_chats: list, poolId: str):
+def create_all(users: list, users_chats: list, users_pictures: list, images_folder: str, poolId: str):
     if users:
         for u in users:
             if u['email']:
                 create_user(u, 'MENTOR', poolId)
-                admin_add_user_to_group(u['email'], 'MENTOR', poolId)
                 time.sleep(1)
     if users_chats:
         for c in users_chats:
             if c['email']:
                 create_user_chats(c)
+                time.sleep(1)
+    if users_pictures:
+        for c in users_pictures:
+            if c['email']:
+                upload_images(users_pictures, images_folder, poolId)
                 time.sleep(1)
 
 def delete_user(user: dict, poolId: str):
@@ -326,7 +321,7 @@ def upload_images(users:list, folder: str, poolId:str):
                 s3.meta.client.upload_file(folder + name, bucket_name, path_name, ExtraArgs={'ACL': 'public-read','ContentType': image_arg})
             except:
                 print("error while uploading image of user " + u["email"])
-                
+
             s3_image_url = "https://" + bucket_name + ".s3.amazonaws.com/" + path_name
             try:
                 response = aws_client.admin_update_user_attributes(
@@ -338,7 +333,7 @@ def upload_images(users:list, folder: str, poolId:str):
                 )
             except:
                 traceback.print_exc()
- 
+
 # --- HELPERS END---
 
 if __name__ == "__main__":
@@ -346,30 +341,39 @@ if __name__ == "__main__":
 
     users_records = None
     users_chats_records = None
+    users_pictures_records = None
     if args.type == 'users':
-        users_df = pd.read_csv(os.path.abspath(args.file), header=1, usecols=users_col_list, nrows=args.rows, engine='python', keep_default_na=False)
+        users_df = pd.read_csv(os.path.abspath(args.file), header=0, usecols=users_col_list, nrows=args.rows, engine='python', keep_default_na=False)
         if args.users_list:
             users_df = users_df[users_df.email.str.contains('|'.join(args.users_list))]
         users_records = users_df.to_dict('records')
     elif args.type == 'chats':
-        users_chats_df = pd.read_csv(os.path.abspath(args.file), header=1, usecols=users_chats_col_list, nrows=args.rows, engine='python', keep_default_na=False)
+        users_chats_df = pd.read_csv(os.path.abspath(args.file), header=0, usecols=users_chats_col_list, nrows=args.rows, engine='python', keep_default_na=False)
         if args.users_list:
             users_chats_df = users_chats_df[users_chats_df.email.str.contains('|'.join(args.users_list))]
         users_chats_records = users_chats_df.to_dict('records')
+    elif args.type == 'pictures':
+        users_pictures_df = pd.read_csv(os.path.abspath(args.file), header=0, usecols=users_pictures_col_list, nrows=args.rows, engine='python', keep_default_na=False)
+        if args.users_list:
+            users_pictures_df = users_pictures_df[users_pictures_df.email.str.contains('|'.join(args.users_list))]
+        users_pictures_records = users_pictures_df.to_dict('records')
     else:
-        users_df = pd.read_csv(os.path.abspath(args.file), header=1, usecols=users_col_list, nrows=args.rows, engine='python', keep_default_na=False)
-        users_chats_df = pd.read_csv(os.path.abspath(args.file), header=1, usecols=users_chats_col_list, nrows=args.rows, engine='python', keep_default_na=False)
+        users_df = pd.read_csv(os.path.abspath(args.file), header=0, usecols=users_col_list, nrows=args.rows, engine='python', keep_default_na=False)
+        users_chats_df = pd.read_csv(os.path.abspath(args.file), header=0, usecols=users_chats_col_list, nrows=args.rows, engine='python', keep_default_na=False)
+        users_pictures_df = pd.read_csv(os.path.abspath(args.file), header=0, usecols=users_pictures_col_list, nrows=args.rows, engine='python', keep_default_na=False)
         if args.users_list:
             users_df = users_df[users_df.email.str.contains('|'.join(args.users_list))]
             users_chats_df = users_chats_df[users_chats_df.email.str.contains('|'.join(args.users_list))]
+            users_pictures_df = users_pictures_df[users_pictures_df.email.str.contains('|'.join(args.users_list))]
         users_records = users_df.to_dict('records')
         users_chats_records = users_chats_df.to_dict('records')
-    
-    if args.upload_images:
-        upload_images(users_records,args.images_folder, args.pool_id)
-    elif args.create:
-        create_all(users_records, users_chats_records, args.pool_id)
+        users_pictures_records = users_pictures_df.to_dict('records')
+
+    if args.create:
+        create_all(users_records, users_chats_records, users_pictures_records, \
+                args.images_folder, args.pool_id)
     elif args.delete:
+        # TODO: delete user images as well
         delete_all(users_records, users_chats_records, args.pool_id)
     else:
         delete_all(users_records, users_chats_records, args.pool_id)
