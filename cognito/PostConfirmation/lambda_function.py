@@ -41,6 +41,11 @@ def send_email(source_email, to_addresses, subject, body_text, body_html, charse
         logger.info(response['MessageId'])
 
 def handler(event, context):
+    logger.info(event)
+    logger.info(context)
+    if event['triggerSource'] == 'PostConfirmation_ConfirmForgotPassword':
+        return event
+
     user_type =  event['request']['userAttributes'].get('custom:user_type', '')
     user_email = event['request']['userAttributes']['email']
     user_name = event['request']['userAttributes']['given_name']
