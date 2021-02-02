@@ -184,6 +184,7 @@ Resources:
             - 'rds:*'
             - 'ec2:DescribeAccountAttributes'
             - 'events:*'
+            - 'lambda:DeleteLayerVersion'
           Resource:
             - '*'
         - Sid: PreventCFNDeletion
