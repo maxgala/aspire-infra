@@ -542,8 +542,8 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
- 
- JamalAbdi:
+        
+  JamalAbdi:
     Type: AWS::IAM::User
     Properties:
       UserName: jamal.abdi19@gmail.com
