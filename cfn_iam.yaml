@@ -279,8 +279,9 @@ Resources:
         Statement:
         - Effect: Allow
           Action:
-          - 'iam:CreateAccessKey'
-          - 'cognito-idp:AdminInitiateAuth'
+          - iam:CreateAccessKey
+          - cognito-idp:AdminInitiateAuth
+          - cognito-idp:AdminUpdateUserAttributes
           Resource:
           - '*'
       Groups:
