@@ -554,3 +554,14 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
+        
+  HarrisSiddiqui:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: harris.siddiqui@maxgala.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
