@@ -565,3 +565,25 @@ Resources:
         PasswordResetRequired: true
       Groups:
         - !Ref DeveloperGroup
+        
+  OwaisHashmi:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: owais.hashmi@maxgala.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
+ 
+  KomalNaseem:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: komal.naseem@maxgala.com
+      LoginProfile:
+        Password:
+          Ref: UserPassword
+        PasswordResetRequired: true
+      Groups:
+        - !Ref DeveloperGroup
